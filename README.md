@@ -14,8 +14,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 ## Table of Contents
 
 - [Getting Started](#getting-started)
-  - [Guides](#guides)
-  - [Tutorials](#tutorials)
+  - [Guides & Tutorials](#guides--tutorials)
   - [Templates](#templates)
 - [Development](#development)
   - [Plugins](#plugins)
@@ -43,18 +42,15 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 
 ## Getting Started
 
-### Guides
+### Guides & Tutorials
 
 - [Introduction](https://v2.tauri.app/start/) ![officially maintained] - Official introduction to Tauri.
 - [Getting Started](https://v2.tauri.app/start/prerequisites/) ![officially maintained] - Official getting started with Tauri docs.
 - [create-tauri-app](https://github.com/tauri-apps/create-tauri-app) ![officially maintained] - Rapidly scaffold your Tauri app.
 - [Auto-Updates with Tauri v2](https://docs.crabnebula.dev/guides/auto-updates-tauri) - Setup auto-updates with Tauri and CrabNebula Cloud.
-
-### Tutorials
-
-- [Create Tauri App with React](https://www.youtube.com/watch?v=zawhqLA7N9Y&ab_channel=chrisbiscardi) - Chris Biscardi shows how easy it is to wire up a Rust crate with a JS module and communicate between them.
+- [Create Tauri App with React](https://www.youtube.com/watch?v=zawhqLA7N9Y&ab_channel=chrisbiscardi) ![youtube] - Chris Biscardi shows how easy it is to wire up a Rust crate with a JS module and communicate between them.
 - [Publish to Apple's App Store](https://thinkgo.io/post/2023/02/publish_tauri_to_apples_app_store/) - Details all the steps needed to publish your Mac app to the app store. Includes a sample bash script.
-- [Tauri & ReactJS - Creating Modern Desktop Apps](https://youtube.com/playlist?list=PLmWYh0f8jKSjt9VC5sq2T3mFETasG2p2L) - Creating a modern desktop application with Tauri.
+- [Tauri & ReactJS - Creating Modern Desktop Apps](https://youtube.com/playlist?list=PLmWYh0f8jKSjt9VC5sq2T3mFETasG2p2L) ![youtube] - Creating a modern desktop application with Tauri.
 
 ### Templates
 
@@ -432,3 +428,4 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 [officially maintained]: https://img.shields.io/badge/official-FFC131?&logo=tauri&logoColor=black
 [closed source]: https://img.shields.io/badge/closed%20source-FFC131?&logoColor=black
 [paid]: https://img.shields.io/badge/paid-FFC131?&logoColor=black
+[youtube]: https://img.shields.io/badge/YouTube-FF0000
