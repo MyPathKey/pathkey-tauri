@@ -120,6 +120,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 ### Integrations
 
 - [Astrodon](https://github.com/astrodon/astrodon) - Make Tauri desktop apps with Deno.
+- [Deno in Tauri](https://github.com/typed-sigterm/deno-in-tauri) - Run JS/TS code with Deno Core Engine, in Tauri apps.
 - [Tauri Specta](https://github.com/oscartbeaumont/tauri-specta) - Completely typesafe Tauri commands.
 - [axios-tauri-adapter](https://git.kaki87.net/KaKi87/axios-tauri-adapter) - `axios` adapter for the `@tauri-apps/api/http` module.
 - [axios-tauri-api-adapter](https://github.com/persiliao/axios-tauri-api-adapter) - Makes it easy to use Axios in Tauri, `axios` adapter for the `@tauri-apps/api/http` module.
