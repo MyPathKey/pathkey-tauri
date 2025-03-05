@@ -265,6 +265,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 - [OyasumiVR](https://github.com/Raphiiko/OyasumiVR) - Software that helps you sleep in virtual reality, for use with SteamVR, VRChat, and more.
 - [Rai Pal](https://github.com/raicuparta/rai-pal) - Manager for universal mods such as `UEVR` and `UUVR`.
 - [Resolute](https://github.com/Gawdl3y/Resolute) - User-friendly, cross-platform mod manager for the game Resonite.
+- [Retrom](https://github.com/JMBeresford/retrom) - Private cloud game library distribution server + frontend/launcher.
 - [Samira](https://github.com/jsnli/Samira) - Steam achievement manager for Linux.
 - [Steam Art Manager](https://github.com/Tormak9970/Steam-Art-Manager) - Tool for customizing the art of your Steam games.
 - [Tauri Chess](https://github.com/jamessizeland/tauri-chess) - Implementation of Chess, logic in Rust and visualization in React.
