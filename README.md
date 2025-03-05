@@ -351,6 +351,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 
 ### Search
 
+- [Coco AI](http://coco.rs/) - 🥥 Coco AI unifies all your enterprise applications and data—Google Workspace, Dropbox, GitHub, and more—into one powerful search and Gen-AI chat platform.
 - [Harana](https://github.com/harana/search) - Search your desktop and 300+ cloud apps, instantly.
 - [Spyglass](https://github.com/a5huynh/spyglass) - Personal search engine that indexes your files/folders, cloud accounts, and whatever interests you on the internet.
 
