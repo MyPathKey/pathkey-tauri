@@ -386,6 +386,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 - [Fancy Screen Recorder](https://fancyapps.com/freebies/) ![closed source] - Record entire screen or a selected area, trim and save as a GIF or video.
 - [FanslySync](https://github.com/SticksDev/FanslySync) - Sync your Fansly data with 3rd party applications, securely!
 - [Flying Carpet](https://github.com/spieglt/flyingcarpet) - File transfer between Android, iOS, Linux, macOS, and Windows over auto-configured hotspot.
+- [Get Unique ID](https://github.com/hiql/get-unique-id-app) - Generates unique IDs for you to use in debugging, development, or anywhere else you may need a unique ID.
 - [Happy](https://github.com/thewh1teagle/happy) - Control HappyLight compatible LED strip with ease.
 - [Imagenie](https://github.com/zhongweili/imagenie) - AI-powered desktop app for stunning image transformations
 - [KoS - Key on Screen](https://github.com/dubisdev/key-on-screen) - Show in your screen the keys you are pressing.
@@ -393,7 +394,7 @@ A curated collection of the best stuff from the Tauri ecosystem and community.
 - [Lingo](https://github.com/thewh1teagle/lingo) - Translate offline in every language on every platform.
 - [Linka!](https://github.com/linka-app/linka) - AI powered, easy to use, cross-platform bookmark management tool.
 - [Locus](https://github.com/Sushants-Git/locus) - Intelligent activity tracker that helps you understand and improve your focus habits.
-- [MagicMirror](https://github.com/idootop/MagicMirror) - Instant AI Face Swap, Hairstyles & Outfits — One click to a brand new you! 
+- [MagicMirror](https://github.com/idootop/MagicMirror) - Instant AI Face Swap, Hairstyles & Outfits — One click to a brand new you!
 - [MBTiles Viewer](https://github.com/Akylas/mbview-rs) - MBTiles Viewer and Inspector.
 - [Metronome](https://github.com/ZaneH/metronome) - Visual metronome for Windows, Linux and macOS.
 - [Mobslide](https://github.com/thewh1teagle/mobslide) - Turn your smartphone into presentation remote controller.
