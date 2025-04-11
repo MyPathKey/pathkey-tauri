@@ -233,6 +233,9 @@ pub struct WebviewAttributes {
   pub traffic_light_position: Option<dpi::Position>,
   pub background_throttling: Option<BackgroundThrottlingPolicy>,
   pub javascript_disabled: bool,
+  /// on macOS and iOS there is a link preview on long pressing links, this is enabled by default.
+  /// see https://docs.rs/objc2-web-kit/latest/objc2_web_kit/struct.WKWebView.html#method.allowsLinkPreview
+  pub allow_link_preview: bool,
 }
 
 impl From<&WindowConfig> for WebviewAttributes {
@@ -277,6 +280,7 @@ impl From<&WindowConfig> for WebviewAttributes {
       builder = builder.background_color(color);
     }
     builder.javascript_disabled = config.javascript_disabled;
+    builder.allow_link_preview = config.allow_link_preview;
     builder
   }
 }
@@ -310,6 +314,7 @@ impl WebviewAttributes {
       traffic_light_position: None,
       background_throttling: None,
       javascript_disabled: false,
+      allow_link_preview: true,
     }
   }
 
@@ -529,6 +534,21 @@ impl WebviewAttributes {
   #[must_use]
   pub fn traffic_light_position(mut self, position: dpi::Position) -> Self {
     self.traffic_light_position = Some(position);
+    self
+  }
+
+  /// Whether to show a link preview when long pressing on links. Available on macOS and iOS only.
+  ///
+  /// Default is true.
+  ///
+  /// See https://docs.rs/objc2-web-kit/latest/objc2_web_kit/struct.WKWebView.html#method.allowsLinkPreview
+  ///
+  /// ## Platform-specific
+  ///
+  /// - **Linux / Windows / Android:** Unsupported.
+  #[must_use]
+  pub fn allow_link_preview(mut self, allow_link_preview: bool) -> Self {
+    self.allow_link_preview = allow_link_preview;
     self
   }
 
