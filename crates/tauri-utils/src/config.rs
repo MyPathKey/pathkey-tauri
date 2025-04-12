@@ -612,6 +612,11 @@ pub struct MacConfig {
   /// The files to include in the application relative to the Contents directory.
   #[serde(default)]
   pub files: HashMap<PathBuf, PathBuf>,
+  /// The version of the build that identifies an iteration of the bundle.
+  ///
+  /// Translates to the bundle's CFBundleVersion property.
+  #[serde(alias = "bundle-version")]
+  pub bundle_version: Option<String>,
   /// A version string indicating the minimum macOS X version that the bundled application supports. Defaults to `10.13`.
   ///
   /// Setting it to `null` completely removes the `LSMinimumSystemVersion` field on the bundle's `Info.plist`
@@ -651,6 +656,7 @@ impl Default for MacConfig {
     Self {
       frameworks: None,
       files: HashMap::new(),
+      bundle_version: None,
       minimum_system_version: macos_minimum_system_version(),
       exception_domain: None,
       signing_identity: None,
@@ -2527,6 +2533,11 @@ pub struct IosConfig {
   /// The `APPLE_DEVELOPMENT_TEAM` environment variable can be set to overwrite it.
   #[serde(alias = "development-team")]
   pub development_team: Option<String>,
+  /// The version of the build that identifies an iteration of the bundle.
+  ///
+  /// Translates to the bundle's CFBundleVersion property.
+  #[serde(alias = "bundle-version")]
+  pub bundle_version: Option<String>,
   /// A version string indicating the minimum iOS version that the bundled application supports. Defaults to `13.0`.
   ///
   /// Maps to the IPHONEOS_DEPLOYMENT_TARGET value.
@@ -2543,6 +2554,7 @@ impl Default for IosConfig {
       template: None,
       frameworks: None,
       development_team: None,
+      bundle_version: None,
       minimum_system_version: ios_minimum_system_version(),
     }
   }
@@ -2846,7 +2858,19 @@ pub struct Config {
   /// App main binary filename. Defaults to the name of your cargo crate.
   #[serde(alias = "main-binary-name")]
   pub main_binary_name: Option<String>,
-  /// App version. It is a semver version number or a path to a `package.json` file containing the `version` field. If removed the version number from `Cargo.toml` is used.
+  /// App version. It is a semver version number or a path to a `package.json` file containing the `version` field.
+  ///
+  /// If removed the version number from `Cargo.toml` is used.
+  /// It's recommended to manage the app versioning in the Tauri config.
+  ///
+  /// ## Platform-specific
+  ///
+  /// - **macOS**: Translates to the bundle's CFBundleShortVersionString property and is used as the default CFBundleVersion.
+  ///    You can set an specific bundle version using [`bundle > macOS > bundleVersion`](MacConfig::bundle_version).
+  /// - **iOS**: Translates to the bundle's CFBundleShortVersionString property and is used as the default CFBundleVersion.
+  ///    You can set an specific bundle version using [`bundle > iOS > bundleVersion`](IosConfig::bundle_version).
+  ///    The `tauri ios build` CLI command has a `--build-number <number>` option that lets you append a build number to the app version.
+  /// - **Android**: By default version 1.0 is used. You can set a version code using [`bundle > android > versionCode`](AndroidConfig::version_code).
   ///
   /// By default version 1.0 is used on Android.
   #[serde(deserialize_with = "version_deserializer", default)]
