@@ -2,11 +2,10 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-use super::PhysicalRect;
-use tao::dpi::{LogicalPosition, LogicalSize, PhysicalPosition};
+use tauri_runtime::dpi::{LogicalPosition, LogicalSize, PhysicalPosition, PhysicalRect};
 
 impl super::MonitorExt for tao::monitor::MonitorHandle {
-  fn work_area(&self) -> PhysicalRect {
+  fn work_area(&self) -> PhysicalRect<i32, u32> {
     use objc2_app_kit::NSScreen;
     use tao::platform::macos::MonitorHandleExtMacOS;
     if let Some(ns_screen) = self.ns_screen() {
@@ -20,7 +19,7 @@ impl super::MonitorExt for tao::monitor::MonitorHandle {
     } else {
       PhysicalRect {
         size: self.size(),
-        position: PhysicalPosition::default(),
+        position: self.position(),
       }
     }
   }
