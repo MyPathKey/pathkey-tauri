@@ -164,7 +164,7 @@ impl Event {
   }
 }
 
-pub fn listen_js_script(
+pub(crate) fn listen_js_script(
   listeners_object_name: &str,
   serialized_target: &str,
   event: EventName<&str>,
@@ -191,7 +191,7 @@ pub fn listen_js_script(
   )
 }
 
-pub fn emit_js_script(
+pub(crate) fn emit_js_script(
   event_emit_function_name: &str,
   emit_args: &EmitArgs,
   serialized_ids: &str,
@@ -205,23 +205,23 @@ pub fn emit_js_script(
   ))
 }
 
-pub fn unlisten_js_script(
+pub(crate) fn unlisten_js_script(
   listeners_object_name: &str,
-  event_name: EventName<&str>,
-  event_id: EventId,
+  event_arg: &str,
+  event_id_arg: &str,
 ) -> String {
   format!(
     "(function () {{
-        const listeners = (window['{listeners_object_name}'] || {{}})['{event_name}']
+        const listeners = (window['{listeners_object_name}'] || {{}})[{event_arg}]
         if (listeners) {{
-          window.__TAURI_INTERNALS__.unregisterCallback(listeners[{event_id}].handlerId)
+          window.__TAURI_INTERNALS__.unregisterCallback(listeners[{event_id_arg}].handlerId)
         }}
       }})()
     ",
   )
 }
 
-pub fn event_initialization_script(function_name: &str, listeners: &str) -> String {
+pub(crate) fn event_initialization_script(function_name: &str, listeners: &str) -> String {
   format!(
     "Object.defineProperty(window, '{function_name}', {{
       value: function (eventData, ids) {{
