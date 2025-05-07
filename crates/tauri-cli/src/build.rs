@@ -14,7 +14,7 @@ use crate::{
 };
 use anyhow::Context;
 use clap::{ArgAction, Parser};
-use std::{env::set_current_dir, fs};
+use std::env::set_current_dir;
 use tauri_utils::platform::Target;
 
 #[derive(Debug, Clone, Parser)]
@@ -174,9 +174,9 @@ pub fn setup(
 
     // Issue #13287 - Allow the use of target dir inside frontendDist/distDir
     // https://github.com/tauri-apps/tauri/issues/13287
-    let target_path = fs::canonicalize(get_cargo_target_dir(&options.args)?)?;
+    let target_path = get_cargo_target_dir(&options.args)?;
     let mut out_folders = Vec::new();
-    if let Ok(web_asset_canonical) = web_asset_path.canonicalize() {
+    if let Ok(web_asset_canonical) = dunce::canonicalize(web_asset_path) {
       if let Ok(relative_path) = target_path.strip_prefix(&web_asset_canonical) {
         let relative_str = relative_path.to_string_lossy();
         if !relative_str.is_empty() {
