@@ -35,6 +35,7 @@
 //! - **image-png**: Adds support to parse `.png` image, see [`Image`].
 //! - **macos-proxy**: Adds support for [`WebviewBuilder::proxy_url`] on macOS. Requires macOS 14+.
 //! - **specta**: Add support for [`specta::specta`](https://docs.rs/specta/%5E2.0.0-rc.9/specta/attr.specta.html) with Tauri arguments such as [`State`](crate::State), [`Window`](crate::Window) and [`AppHandle`](crate::AppHandle)
+//! - **dynamic-acl** *(enabled by default)*: Enables you to add ACLs at runtime, notably it enables the [`Manager::add_capability`] function.
 //!
 //! ## Cargo allowlist features
 //!
@@ -64,7 +65,9 @@ macro_rules! ios_plugin_binding {
 #[doc(hidden)]
 pub use embed_plist;
 pub use error::{Error, Result};
-use ipc::{RuntimeAuthority, RuntimeCapability};
+use ipc::RuntimeAuthority;
+#[cfg(feature = "dynamic-acl")]
+use ipc::RuntimeCapability;
 pub use resources::{Resource, ResourceId, ResourceTable};
 #[cfg(target_os = "ios")]
 #[doc(hidden)]
@@ -820,6 +823,7 @@ pub trait Manager<R: Runtime>: sealed::ManagerBase<R> {
   ///
   /// [`tauri.conf.json > app > security > capabilities`]: https://tauri.app/reference/config/#capabilities
   /// [tauri_build::Attributes::capabilities_path_pattern]: https://docs.rs/tauri-build/2/tauri_build/struct.Attributes.html#method.capabilities_path_pattern
+  #[cfg(feature = "dynamic-acl")]
   fn add_capability(&self, capability: impl RuntimeCapability) -> Result<()> {
     self
       .manager()
