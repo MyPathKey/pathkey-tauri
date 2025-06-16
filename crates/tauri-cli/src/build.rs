@@ -150,6 +150,23 @@ pub fn setup(
     std::process::exit(1);
   }
 
+  if config_.identifier.ends_with(".app") {
+    if cfg!(target_os = "macos") {
+      log::error!(
+        "The bundle identifier \"{}\" set in `{} identifier` must not end with `.app` on macOS because it conflicts with the application bundle extension.",
+        config_.identifier,
+        bundle_identifier_source
+      );
+      std::process::exit(1);
+    } else {
+      log::warn!(
+        "The bundle identifier \"{}\" set in `{} identifier` ends with `.app`. This is not recommended because it conflicts with the application bundle extension on macOS.",
+        config_.identifier,
+        bundle_identifier_source
+      );
+    }
+  }
+
   if let Some(before_build) = config_.build.before_build_command.clone() {
     helpers::run_hook("beforeBuildCommand", before_build, interface, options.debug)?;
   }
