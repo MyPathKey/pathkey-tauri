@@ -14,7 +14,7 @@ version = "0.1.0"
 dependencies = [
  "insta",
  "serde_json",
- "tauri-utils 2.4.0",
+ "tauri-utils",
 ]
 
 [[package]]
@@ -569,7 +569,7 @@ dependencies = [
  "http-body-util",
  "hyper 1.5.2",
  "hyper-util",
- "itoa 1.0.14",
+ "itoa",
  "matchit",
  "memchr",
  "mime",
@@ -1084,7 +1084,7 @@ dependencies = [
  "serde_json",
  "textwrap",
  "thiserror 2.0.10",
- "toml 0.8.19",
+ "toml",
  "ureq",
  "which",
  "windows 0.61.1",
@@ -1121,7 +1121,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "02260d489095346e5cafd04dea8e8cb54d1d74fcd759022a9b72986ebe9a1257"
 dependencies = [
  "serde",
- "toml 0.8.19",
+ "toml",
 ]
 
 [[package]]
@@ -1347,7 +1347,7 @@ checksum = "3b79c4069c6cad78e2e0cdfcbd26275770669fb39fd308a752dc110e83b9af32"
 dependencies = [
  "castaway",
  "cfg-if",
- "itoa 1.0.14",
+ "itoa",
  "rustversion",
  "ryu",
  "static_assertions",
@@ -1617,15 +1617,15 @@ checksum = "42aaeae719fd78ce501d77c6cdf01f7e96f26bcd5617a4903a1c2b97e388543a"
 
 [[package]]
 name = "cssparser"
-version = "0.27.2"
+version = "0.29.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "754b69d351cdc2d8ee09ae203db831e005560fc6030da058f86ad60c92a9cb0a"
+checksum = "f93d03419cb5950ccfd3daf3ff1c7a36ace64609a1a8746d493df1ca0afde0fa"
 dependencies = [
  "cssparser-macros",
  "dtoa-short",
- "itoa 0.4.8",
+ "itoa",
  "matches",
- "phf 0.8.0",
+ "phf 0.10.1",
  "proc-macro2",
  "quote",
  "smallvec",
@@ -1957,7 +1957,7 @@ dependencies = [
  "libc",
  "option-ext",
  "redox_users 0.5.0",
- "windows-sys 0.59.0",
+ "windows-sys 0.60.2",
 ]
 
 [[package]]
@@ -2183,7 +2183,7 @@ dependencies = [
  "cc",
  "memchr",
  "rustc_version",
- "toml 0.8.19",
+ "toml",
  "vswhom",
  "winreg 0.52.0",
 ]
@@ -2406,7 +2406,7 @@ dependencies = [
  "atomic",
  "pear",
  "serde",
- "toml 0.8.19",
+ "toml",
  "uncased",
  "version_check",
 ]
@@ -3179,16 +3179,14 @@ dependencies = [
 
 [[package]]
 name = "html5ever"
-version = "0.26.0"
+version = "0.29.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bea68cab48b8459f17cf1c944c67ddc572d272d9f2b274140f223ecb1da4a3b7"
+checksum = "3b7410cae13cbc75623c98ac4cbfd1f0bedddf3227afc24f370cf0f50a44a11c"
 dependencies = [
  "log",
  "mac",
  "markup5ever",
- "proc-macro2",
- "quote",
- "syn 1.0.109",
+ "match_token",
 ]
 
 [[package]]
@@ -3199,7 +3197,7 @@ checksum = "601cbb57e577e2f5ef5be8e7b83f0f63994f25aa94d673e54a92d5c516d101f1"
 dependencies = [
  "bytes",
  "fnv",
- "itoa 1.0.14",
+ "itoa",
 ]
 
 [[package]]
@@ -3210,7 +3208,7 @@ checksum = "f16ca2af56261c99fba8bac40a10251ce8188205a4c448fbb745a2e4daa76fea"
 dependencies = [
  "bytes",
  "fnv",
- "itoa 1.0.14",
+ "itoa",
 ]
 
 [[package]]
@@ -3286,7 +3284,7 @@ dependencies = [
  "http-body 0.4.6",
  "httparse",
  "httpdate",
- "itoa 1.0.14",
+ "itoa",
  "pin-project-lite",
  "socket2",
  "tokio",
@@ -3309,7 +3307,7 @@ dependencies = [
  "http-body 1.0.1",
  "httparse",
  "httpdate",
- "itoa 1.0.14",
+ "itoa",
  "pin-project-lite",
  "smallvec",
  "tokio",
@@ -3674,15 +3672,6 @@ dependencies = [
 
 [[package]]
 name = "infer"
-version = "0.13.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f551f8c3a39f68f986517db0d1759de85881894fdc7db798bd2a9df9cb04b7fc"
-dependencies = [
- "cfb",
-]
-
-[[package]]
-name = "infer"
 version = "0.19.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a588916bfdfd92e71cacef98a63d9b1f0d74d6599980d11894290e7ddefffcf7"
@@ -3827,12 +3816,6 @@ dependencies = [
 
 [[package]]
 name = "itoa"
-version = "0.4.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b71991ff56294aa922b450139ee08b3bfc70982c6b2c7562771375cf73542dd4"
-
-[[package]]
-name = "itoa"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d75a2a4b1b190afb6f5425f10f6a8f959d2ea0b9c2b1d79553551850539e4674"
@@ -3916,17 +3899,6 @@ checksum = "6717b6b5b077764fb5966237269cb3c64edddde4b14ce42647430a78ced9e7b7"
 dependencies = [
  "once_cell",
  "wasm-bindgen",
-]
-
-[[package]]
-name = "json-patch"
-version = "1.4.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ec9ad60d674508f3ca8f380a928cfe7b096bc729c4e2dbfe3852bc45da3ab30b"
-dependencies = [
- "serde",
- "serde_json",
- "thiserror 1.0.69",
 ]
 
 [[package]]
@@ -4084,7 +4056,7 @@ dependencies = [
  "fancy-regex",
  "fraction",
  "idna",
- "itoa 1.0.14",
+ "itoa",
  "num-cmp",
  "num-traits",
  "once_cell",
@@ -4180,14 +4152,13 @@ dependencies = [
 
 [[package]]
 name = "kuchikiki"
-version = "0.8.2"
+version = "0.8.8-speedreader"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f29e4755b7b995046f510a7520c42b2fed58b77bd94d5a87a8eb43d2fd126da8"
+checksum = "02cb977175687f33fa4afa0c95c112b987ea1443e5a51c8f8ff27dc618270cc2"
 dependencies = [
  "cssparser",
  "html5ever",
- "indexmap 1.9.3",
- "matches",
+ "indexmap 2.7.0",
  "selectors",
 ]
 
@@ -4423,16 +4394,27 @@ dependencies = [
 
 [[package]]
 name = "markup5ever"
-version = "0.11.0"
+version = "0.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7a2629bb1404f3d34c2e921f21fd34ba00b206124c81f65c50b43b6aaefeb016"
+checksum = "c7a7213d12e1864c0f002f52c2923d4556935a43dec5e71355c2760e0f6e7a18"
 dependencies = [
  "log",
- "phf 0.10.1",
- "phf_codegen 0.10.0",
+ "phf 0.11.3",
+ "phf_codegen 0.11.3",
  "string_cache",
  "string_cache_codegen",
  "tendril",
+]
+
+[[package]]
+name = "match_token"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "88a9689d8d44bf9964484516275f5cd4c9b59457a6940c1d5d0ecbb94510a36b"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.95",
 ]
 
 [[package]]
@@ -5814,9 +5796,7 @@ version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3dfb61232e34fcb633f43d12c58f83c1df82962dcdfa565a4e866ffc17dafe12"
 dependencies = [
- "phf_macros 0.8.0",
  "phf_shared 0.8.0",
- "proc-macro-hack",
 ]
 
 [[package]]
@@ -5825,7 +5805,9 @@ version = "0.10.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fabbf1ead8a5bcbc20f5f8b939ee3f5b0f6f281b6ad3468b84656b658b455259"
 dependencies = [
+ "phf_macros 0.10.0",
  "phf_shared 0.10.0",
+ "proc-macro-hack",
 ]
 
 [[package]]
@@ -5850,12 +5832,12 @@ dependencies = [
 
 [[package]]
 name = "phf_codegen"
-version = "0.10.0"
+version = "0.11.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4fb1c3a8bc4dd4e5cfce29b44ffc14bedd2ee294559a294e2a4d4c9e9a6a13cd"
+checksum = "aef8048c789fa5e851558d709946d6d79a8ff88c0440c587967f8e94bfb1216a"
 dependencies = [
- "phf_generator 0.10.0",
- "phf_shared 0.10.0",
+ "phf_generator 0.11.3",
+ "phf_shared 0.11.3",
 ]
 
 [[package]]
@@ -5890,12 +5872,12 @@ dependencies = [
 
 [[package]]
 name = "phf_macros"
-version = "0.8.0"
+version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7f6fde18ff429ffc8fe78e2bf7f8b7a5a5a6e2a8b58bc5a9ac69198bbda9189c"
+checksum = "58fdf3184dd560f160dd73922bea2d5cd6e8f064bf4b13110abd81b03697b4e0"
 dependencies = [
- "phf_generator 0.8.0",
- "phf_shared 0.8.0",
+ "phf_generator 0.10.0",
+ "phf_shared 0.10.0",
  "proc-macro-hack",
  "proc-macro2",
  "quote",
@@ -7345,22 +7327,20 @@ dependencies = [
 
 [[package]]
 name = "selectors"
-version = "0.22.0"
+version = "0.24.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "df320f1889ac4ba6bc0cdc9c9af7af4bd64bb927bccdf32d81140dc1f9be12fe"
+checksum = "0c37578180969d00692904465fb7f6b3d50b9a2b952b87c23d0e2e5cb5013416"
 dependencies = [
  "bitflags 1.3.2",
  "cssparser",
  "derive_more 0.99.18",
  "fxhash",
  "log",
- "matches",
  "phf 0.8.0",
  "phf_codegen 0.8.0",
  "precomputed-hash",
  "servo_arc",
  "smallvec",
- "thin-slice",
 ]
 
 [[package]]
@@ -7480,7 +7460,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b0d7ba2887406110130a978386c4e1befb98c674b4fba677954e4db976630d9"
 dependencies = [
  "indexmap 2.7.0",
- "itoa 1.0.14",
+ "itoa",
  "memchr",
  "ryu",
  "serde",
@@ -7492,7 +7472,7 @@ version = "0.1.16"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "af99884400da37c88f5e9146b7f1fd0fbcae8f6eec4e9da38b67d05486f814a6"
 dependencies = [
- "itoa 1.0.14",
+ "itoa",
  "serde",
 ]
 
@@ -7523,7 +7503,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3491c14715ca2294c4d6a88f15e84739788c1d030eed8c110436aafdaa2f3fd"
 dependencies = [
  "form_urlencoded",
- "itoa 1.0.14",
+ "itoa",
  "ryu",
  "serde",
 ]
@@ -7565,7 +7545,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a8b1a1a2ebf674015cc02edccce75287f1a0130d394307b36743c2f5d504b47"
 dependencies = [
  "indexmap 2.7.0",
- "itoa 1.0.14",
+ "itoa",
  "ryu",
  "serde",
  "unsafe-libyaml",
@@ -7620,9 +7600,9 @@ dependencies = [
 
 [[package]]
 name = "servo_arc"
-version = "0.1.1"
+version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d98238b800e0d1576d8b6e3de32827c2d74bee68bb97748dcf5071fb53965432"
+checksum = "d52aa42f8fdf0fed91e5ce7f23d8138441002fa31dca008acf47e6fd4721f741"
 dependencies = [
  "nodrop",
  "stable_deref_trait",
@@ -8097,7 +8077,7 @@ version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c01c27a80b6151b0557f9ccbe89c11db571dc5f68113690c1e028d7e974bae94"
 dependencies = [
- "itoa 1.0.14",
+ "itoa",
  "ryu",
  "sval",
 ]
@@ -8108,7 +8088,7 @@ version = "2.13.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0deef63c70da622b2a8069d8600cf4b05396459e665862e7bdb290fd6cf3f155"
 dependencies = [
- "itoa 1.0.14",
+ "itoa",
  "ryu",
  "sval",
 ]
@@ -8268,15 +8248,15 @@ dependencies = [
  "cfg-expr",
  "heck 0.5.0",
  "pkg-config",
- "toml 0.8.19",
+ "toml",
  "version-compare",
 ]
 
 [[package]]
 name = "tao"
-version = "0.33.0"
+version = "0.34.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e59c1f38e657351a2e822eadf40d6a2ad4627b9c25557bc1180ec1b3295ef82"
+checksum = "49c380ca75a231b87b6c9dd86948f035012e7171d1a7c40a9c2890489a7ffd8a"
 dependencies = [
  "bitflags 2.7.0",
  "core-foundation 0.10.0",
@@ -8391,7 +8371,7 @@ dependencies = [
  "tauri-macros",
  "tauri-runtime",
  "tauri-runtime-wry",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "thiserror 2.0.10",
  "tokio",
  "tracing",
@@ -8414,16 +8394,16 @@ dependencies = [
  "dirs 6.0.0",
  "glob",
  "heck 0.5.0",
- "json-patch 3.0.1",
+ "json-patch",
  "quote",
  "schemars",
  "semver",
  "serde",
  "serde_json",
  "tauri-codegen",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "tauri-winres",
- "toml 0.8.19",
+ "toml",
  "walkdir",
 ]
 
@@ -8458,7 +8438,7 @@ dependencies = [
  "tar",
  "tauri-icns",
  "tauri-macos-sign",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "tempfile",
  "thiserror 2.0.10",
  "time",
@@ -8501,7 +8481,7 @@ dependencies = [
  "include_dir",
  "insta",
  "itertools 0.13.0",
- "json-patch 3.0.1",
+ "json-patch",
  "json5",
  "jsonrpsee",
  "jsonrpsee-client-transport",
@@ -8539,11 +8519,10 @@ dependencies = [
  "tauri-bundler",
  "tauri-icns",
  "tauri-macos-sign",
- "tauri-utils 1.6.0",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "tempfile",
  "tokio",
- "toml 0.8.19",
+ "toml",
  "toml_edit 0.22.22",
  "ureq",
  "url",
@@ -8570,7 +8549,7 @@ dependencies = [
  "base64 0.22.1",
  "brotli",
  "ico",
- "json-patch 3.0.1",
+ "json-patch",
  "plist",
  "png",
  "proc-macro2",
@@ -8580,7 +8559,7 @@ dependencies = [
  "serde_json",
  "sha2",
  "syn 2.0.95",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "thiserror 2.0.10",
  "time",
  "url",
@@ -8658,7 +8637,7 @@ dependencies = [
  "quote",
  "syn 2.0.95",
  "tauri-codegen",
- "tauri-utils 2.4.0",
+ "tauri-utils",
 ]
 
 [[package]]
@@ -8671,8 +8650,8 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "tauri-utils 2.4.0",
- "toml 0.8.19",
+ "tauri-utils",
+ "toml",
  "walkdir",
 ]
 
@@ -8723,7 +8702,7 @@ dependencies = [
  "raw-window-handle",
  "serde",
  "serde_json",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "thiserror 2.0.10",
  "url",
  "windows 0.61.1",
@@ -8746,7 +8725,7 @@ dependencies = [
  "softbuffer",
  "tao",
  "tauri-runtime",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "tracing",
  "url",
  "webkit2gtk",
@@ -8762,7 +8741,7 @@ dependencies = [
  "schemars",
  "serde",
  "serde_json",
- "tauri-utils 2.4.0",
+ "tauri-utils",
  "url",
 ]
 
@@ -8782,37 +8761,6 @@ dependencies = [
 
 [[package]]
 name = "tauri-utils"
-version = "1.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2826db448309d382dac14d520f0c0a40839b87b57b977e59cf5f296b3ace6a93"
-dependencies = [
- "aes-gcm",
- "ctor",
- "dunce",
- "getrandom 0.2.15",
- "heck 0.5.0",
- "html5ever",
- "infer 0.13.0",
- "json-patch 1.4.0",
- "json5",
- "kuchikiki",
- "log",
- "memchr",
- "phf 0.11.3",
- "schemars",
- "semver",
- "serde",
- "serde_json",
- "serde_with",
- "serialize-to-javascript",
- "thiserror 1.0.69",
- "toml 0.7.8",
- "url",
- "windows-version",
-]
-
-[[package]]
-name = "tauri-utils"
 version = "2.4.0"
 dependencies = [
  "aes-gcm",
@@ -8825,8 +8773,8 @@ dependencies = [
  "glob",
  "html5ever",
  "http 1.2.0",
- "infer 0.19.0",
- "json-patch 3.0.1",
+ "infer",
+ "json-patch",
  "json5",
  "kuchikiki",
  "log",
@@ -8845,7 +8793,7 @@ dependencies = [
  "serialize-to-javascript",
  "swift-rs",
  "thiserror 2.0.10",
- "toml 0.8.19",
+ "toml",
  "url",
  "urlpattern",
  "uuid",
@@ -8859,7 +8807,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "56eaa45f707bedf34d19312c26d350bc0f3c59a47e58e8adbeecdc850d2c13a0"
 dependencies = [
  "embed-resource",
- "toml 0.8.19",
+ "toml",
 ]
 
 [[package]]
@@ -8930,12 +8878,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "thin-slice"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8eaa81235c7058867fa8c0e7314f33dcce9c215f535d1913822a2b3f5e289f3c"
-
-[[package]]
 name = "thiserror"
 version = "1.0.69"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8993,7 +8935,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "35e7868883861bd0e56d9ac6efcaaca0d6d5d82a2a7ec8209ff492c07cf37b21"
 dependencies = [
  "deranged",
- "itoa 1.0.14",
+ "itoa",
  "libc",
  "num-conv",
  "num_threads",
@@ -9182,18 +9124,6 @@ dependencies = [
 
 [[package]]
 name = "toml"
-version = "0.7.8"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd79e69d3b627db300ff956027cc6c3798cef26d22526befdfcd12feeb6d2257"
-dependencies = [
- "serde",
- "serde_spanned",
- "toml_datetime",
- "toml_edit 0.19.15",
-]
-
-[[package]]
-name = "toml"
 version = "0.8.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a1ed1f98e3fdc28d6d910e6737ae6ab1a93bf1985935a1193e68f93eeb68d24e"
@@ -9221,8 +9151,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1b5bb770da30e5cbfde35a2d7b9b8a2c4b8ef89548a7a6aeab5c9a576e3e7421"
 dependencies = [
  "indexmap 2.7.0",
- "serde",
- "serde_spanned",
  "toml_datetime",
  "winnow 0.5.40",
 ]
@@ -10065,9 +9993,9 @@ dependencies = [
 
 [[package]]
 name = "webview2-com"
-version = "0.37.0"
+version = "0.38.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b542b5cfbd9618c46c2784e4d41ba218c336ac70d44c55e47b251033e7d85601"
+checksum = "d4ba622a989277ef3886dd5afb3e280e3dd6d974b766118950a08f8f678ad6a4"
 dependencies = [
  "webview2-com-macros",
  "webview2-com-sys",
@@ -10090,9 +10018,9 @@ dependencies = [
 
 [[package]]
 name = "webview2-com-sys"
-version = "0.37.0"
+version = "0.38.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ae2d11c4a686e4409659d7891791254cf9286d3cfe0eef54df1523533d22295"
+checksum = "36695906a1b53a3bf5c4289621efedac12b73eeb0b89e7e1a89b517302d5d75c"
 dependencies = [
  "thiserror 2.0.10",
  "windows 0.61.1",
@@ -10778,9 +10706,9 @@ checksum = "1e9df38ee2d2c3c5948ea468a8406ff0db0b29ae1ffde1bcf20ef305bcc95c51"
 
 [[package]]
 name = "wry"
-version = "0.51.2"
+version = "0.52.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c886a0a9d2a94fd90cfa1d929629b79cfefb1546e2c7430c63a47f0664c0e4e2"
+checksum = "b08db04817a654a7e3339647d9cf8b497ed9ddcd4ec7cfda5a3a220c10a3bba3"
 dependencies = [
  "base64 0.22.1",
  "block2 0.6.0",
