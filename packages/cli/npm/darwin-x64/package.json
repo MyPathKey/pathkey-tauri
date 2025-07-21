@@ -1,6 +1,6 @@
 {
   "name": "@tauri-apps/cli-darwin-x64",
-  "version": "2.6.3",
+  "version": "0.0.0",
   "cpu": [
     "x64"
   ],
