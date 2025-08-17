@@ -10,6 +10,7 @@ use crate::{
       get as get_config, reload as reload_config, BeforeDevCommand, ConfigHandle, FrontendDist,
     },
   },
+  info::plugins::check_mismatched_packages,
   interface::{AppInterface, ExitReason, Interface},
   CommandExt, ConfigValue, Result,
 };
@@ -135,6 +136,13 @@ fn command_internal(mut options: Options) -> Result<()> {
 
 pub fn setup(interface: &AppInterface, options: &mut Options, config: ConfigHandle) -> Result<()> {
   let tauri_path = tauri_dir();
+
+  std::thread::spawn(|| {
+    if let Err(error) = check_mismatched_packages(frontend_dir(), tauri_path) {
+      log::error!("{error}");
+    }
+  });
+
   set_current_dir(tauri_path).with_context(|| "failed to change current working directory")?;
 
   if let Some(before_dev) = config

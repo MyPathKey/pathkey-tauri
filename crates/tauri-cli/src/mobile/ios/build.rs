@@ -88,6 +88,11 @@ pub struct Options {
   /// e.g. `tauri ios build -- [runnerArgs]`.
   #[clap(last(true))]
   pub args: Vec<String>,
+  /// Do not error out if a version mismatch is detected on a Tauri package.
+  ///
+  /// Only use this when you are sure the mismatch is incorrectly detected as version mismatched Tauri packages can lead to unknown behavior.
+  #[clap(long)]
+  pub ignore_version_mismatches: bool,
 }
 
 #[derive(Debug, Clone, Copy, ValueEnum)]
@@ -133,6 +138,7 @@ impl From<Options> for BuildOptions {
       args: options.args,
       ci: options.ci,
       skip_stapling: false,
+      ignore_version_mismatches: options.ignore_version_mismatches,
     }
   }
 }
