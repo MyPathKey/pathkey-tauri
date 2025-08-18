@@ -1,0 +1,51 @@
+{
+  "productName": "PathKey Desktop",
+  "version": "0.1.0",
+  "identifier": "com.pathkey.desktop",
+
+  "build": {
+    // If you're serving local static files (recommended), leave this empty.
+    // If you have a dev server (e.g., Vite), you can set devPath at runtime.
+    "beforeBuildCommand": "",
+    "beforeDevCommand": ""
+  },
+
+  "app": {
+    // Serve your local frontend from the "dist" or "src" folder.
+    // For a plain HTML app bundled by Tauri, point to a folder on disk.
+    // During dev, Tauri will load files directly from this path.
+    "windows": [
+      {
+        "title": "PathKey Console",
+        "width": 1060,
+        "height": 720,
+        "resizable": true,
+        "fullscreen": false,
+        "minWidth": 900,
+        "minHeight": 560,
+        "visible": true,
+        "center": true
+      }
+    ],
+    "security": {
+      // Keep this strict; add only what you need.
+      "csp": "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self';"
+    }
+  },
+
+  "bundle": {
+    "active": true,
+    "category": "DeveloperTool",
+    "targets": "all",
+    "icon": ["../public/icon.png"],
+
+    // ⬇️ Always bundle your legal artifacts with every binary.
+    //    Keep these lines to ensure LICENSE & NOTICE are inside app packages.
+    "resources": [
+      "../LICENSE",         // Umbrella note: explains dual-license setup
+      "../LICENSE-MIT",     // MIT license for upstream-derived code
+      "../LICENSE-PATHKEY", // Proprietary license for PathKey™ additions
+      "../NOTICE"           // Attribution/credits
+    ]
+  }
+}

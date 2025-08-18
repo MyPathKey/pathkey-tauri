@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tauri-apps/awesome-tauri.git"
+    "url": "git+https://github.com/MyPathKey/pathkey-tauri.git"
   },
-  "author": "",
+  "author": "chirv",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/tauri-apps/awesome-tauri/issues"
   },
-  "homepage": "https://github.com/tauri-apps/awesome-tauri#readme",
+  "homepage": "https://github.com/MyPathKey/pathkey-tauri#readme",
   "devDependencies": {
     "awesome-lint": "^0.18.0"
   }

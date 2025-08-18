@@ -1,0 +1,16 @@
+NOTICE
+
+This project includes software licensed under multiple licenses.
+
+=== MIT-LICENSED COMPONENTS ===
+Portions of this software are derived from the Tauri project 
+(https://tauri.app/), which is licensed under the MIT License.
+See LICENSE-MIT for full text.
+
+=== PATHKEY™ PROPRIETARY COMPONENTS ===
+All MyPathKey™ code, branding, styling, logic, and additions are proprietary
+and licensed under the MyPathKey™ Proprietary License.
+See LICENSE-PATHKEY for full text.
+
+PathKey™ and MyPathKey™ is a trademark of MyPathKey. All rights reserved.
+Unauthorized use of any of the MyPathKey™ names or logo is prohibited.
