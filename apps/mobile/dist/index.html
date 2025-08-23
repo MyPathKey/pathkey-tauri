@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PathKey Portal</title>
+  <style>
+    body {
+      background-color: #0b1d14; /* dark green */
+      color: #ffd700; /* gold */
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    .sigil {
+      width: 150px;
+      height: 150px;
+      margin: 0 auto;
+      background-image: url('pathkey-sigil-placeholder.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+    .sigil:hover {
+      transform: scale(1.1);
+    }
+    .quote, .soul-sentence {
+      display: none;
+      margin-top: 1.5rem;
+      font-size: 1.2rem;
+      color: #fff9e6;
+    }
+    .btn {
+      margin-top: 2rem;
+      padding: 1rem 2rem;
+      font-size: 1rem;
+      background-color: #ffd700;
+      color: #0b1d14;
+      border: none;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+    .nav-links {
+      margin-top: 2rem;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .nav-links a {
+      color: #bbb;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sigil -->
+  <div class="sigil" id="sigil"></div>
+
+  <!-- Quote revealed on sigil tap -->
+  <div class="quote" id="quote">“You didn’t come here to be normal. You came here to remember.”</div>
+
+  <!-- Soul Sentence (Placeholder for PathKey logic) -->
+  <div class="soul-sentence" id="soulSentence">“You are the storm-calmer and soul-stabilizer, but you must stop bleeding just to prove you love.”</div>
+
+  <!-- Reveal Button -->
+  <button class="btn" onclick="revealPathKey()">Reveal My PathKey</button>
+
+  <!-- Navigation Links (simulate swipe bounce navs) -->
+  <div class="nav-links">
+    <a href="#daily-vibe">Skip to Today’s Vibe</a>
+    <a href="#truth-zone">Go to the Mirror</a>
+    <a href="#sigil-sanctuary">Just Give Me My Sigil</a>
+  </div>
+
+  <script>
+    document.getElementById("sigil").addEventListener("click", function () {
+      document.getElementById("quote").style.display = "block";
+      document.getElementById("soulSentence").style.display = "block";
+    });
+
+    function revealPathKey() {
+      // Navigate to Core Path Page (you’ll replace with Tauri route or SPA logic)
+      window.location.href = "/core-path.html"; // or replace with framework nav
+    }
+  </script>
+</body>
+</html>
