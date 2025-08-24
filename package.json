@@ -1,65 +1,16 @@
 {
-  "name": "tauri-workspace",
-  "version": "0.0.0",
-  "license": "Apache-2.0 OR MIT",
+  "name": "pathkey-desktop",
   "private": true,
-  "contributors": [
-    "Tauri Programme within The Commons Conservancy"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/tauri-apps/tauri.git"
-  },
+  "packageManager": "pnpm@10.15.0+sha512.486ebc259d3e999a4e8691ce03b5cac4a71cbeca39372a9b762cb500cfdf0873e2cb16abe3d951b1ee2cf012503f027b98b6584e4df22524e0c7450d9ec7aa7b",
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "eslint:check": "pnpm run -r eslint:check",
-    "ts:check": "pnpm run -r ts:check",
-    "build": "pnpm run -F !api build && pnpm run -F api build",
-    "build:debug": "pnpm run -F !api build:debug && pnpm run -F api build:debug",
-    "build:api": "pnpm run --filter \"@tauri-apps/api\" build",
-    "build:api:debug": "pnpm run --filter \"@tauri-apps/api\" build:debug",
-    "build:cli": "pnpm run --filter \"@tauri-apps/cli\" build",
-    "build:cli:debug": "pnpm run --filter \"@tauri-apps/cli\" build:debug",
-    "test": "pnpm run -r test",
-    "example:api:dev": "pnpm run --filter \"api\" tauri dev"
+    "tauri": "tauri",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "tauri build",
+    "dev": "tauri dev",
+    "build": "tauri build",
+    "doctor": "tauri doctor"
   },
   "devDependencies": {
-    "prettier": "^3.5.3"
-  },
-  "packageManager": "pnpm@10.12.1",
-  "pnpm": {
-    "overrides": {
-      "brace-expansion@<4.0.1": ">=4.0.1",
-      "cross-spawn@>=7.0.0 <7.0.5": ">=7.0.5",
-      "cookie@<0.7.0": ">=0.7.0"
-    },
-    "onlyBuiltDependencies": [
-      "esbuild",
-      "workerd"
-    ]
-  }
-}
-
-{
-  "name": "awesome-tauri",
-  "version": "1.0.0",
-  "description": "<!-- <p align=\"center\">   <br>   <img width=\"400\" src=\"./assets/logo.svg\" alt=\"logo of awesome-vite repository\">   <br>   <br> </p> -->",
-  "main": "index.js",
-  "scripts": {
-    "lint": "awesome-lint README.md"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MyPathKey/pathkey-tauri.git"
-  },
-  "author": "chirv",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/tauri-apps/awesome-tauri/issues"
-  },
-  "homepage": "https://github.com/MyPathKey/pathkey-tauri#readme",
-  "devDependencies": {
-    "awesome-lint": "^0.18.0"
+    "@tauri-apps/cli": "^2.0.0"
   }
 }

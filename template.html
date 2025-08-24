@@ -16,6 +16,28 @@
     .logo-img{height:64px;width:auto;display:block}
     .tagline{font-size:1rem;align-self:baseline;font-weight:350;margin-left:0}
 
+    /* Desktop nav + actions */
+    .nav-desktop{display:none;gap:14px;align-items:center}
+    .nav-desktop a{color:var(--muted);text-decoration:none;font-size:.95rem;opacity:.9}
+    .nav-desktop a:hover{opacity:1}
+
+    .actions{display:flex;align-items:center;gap:8px;}
+    .icon{width:32px;height:32px;border-radius:0px;outline:none; display:block; }
+    .icon img { width: 100%; height: 100%; display:block; }
+    button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px;}
+    button, .signin-btn, icon-btn { -webkit-tap-highlight-color: transparent; }
+    .icon-btn, .signin-btn{right:64px;display:flex;align-items:center;gap:3px;justify-content: center; padding: 6px 6px; border-radius:6px; margin-left:auto; border:none;background:transparent;color:#f3efe6;cursor:pointer}
+    .icon-btn:hover, .signin-btn:hover{background:rgba(255,255,255,0,0.08 )}
+    .spacer{flex:1;}
+
+
+
+    /* Mobile dropdown menu */
+    .menu-panel{display:none!important;position:absolute;right:16px;top:64px;background:linear-gradient(180deg,#0e281c,#0a2217);border:1px solid #234230;border-radius:12px;padding:10px;box-shadow:0 16px 40px -20px rgba(0,0,0,.6)}
+    .menu-panel a{display:block;padding:10px 12px;border-radius:8px;color:#e7d7b3;text-decoration:none}
+    .menu-panel a:hover{background:rgba(38,78,55,.2)}
+    .menu-panel.open{display:block}
+
     /* Layout / cards */
     main{padding:24px 16px}
     .container{max-width:1100px;margin:0 auto}
@@ -55,9 +77,49 @@
     footer{border-top:1px solid #22402d;margin-top:28px;color:#d7caa9}
     .footer-inner{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;justify-content:center;}
 
+    /* Responsive: show desktop nav at >=900px; show hamburger below */
+    @media (min-width:900px){
+      .nav-desktop{display:none}
+      #menuBtn{display:inline-flex!important;align-items:center;justify-content:center}
+      .menu-panel{display:none!important}
+    }
   </style>
 </head>
 <body>
+<header>
+  <div class="header-inner">
+    <a class="brand" href="#">
+      <img class="logo-img" src="./assets/logo_text.png" alt="Path Key text"/>
+      <img class="logo-img" src="./assets/logo_key.png" alt="Path Key logo"/>
+      <span class="tagline">Web</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="nav-desktop">
+  <a href="about.html" target="_blank" rel="noopener">About</a>
+  <a href="more.html" target="_blank" rel="noopener">More</a>
+  <a href="contact.html" target="_blank" rel="noopener">Contact</a>
+</nav>
+<div class="spacer"></div>
+    <!-- Actions: Sign in + Hamburger -->
+    <div class="actions">
+      <button class="signin-btn" id="signinBtn" title="Sign in" type="button">
+        <div class="icon" aria-hidden="true"></div><img src="./assets/signin.svg" class="icon">
+        <span>Sign in</span>
+      </button>
+      <button class="icon-btn" id="menuBtn" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false" type="button">
+        <div class="icon" aria-hidden="true"></div><img src="./assets/menu.svg" class="icon">
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown menu -->
+  <div id="mobileMenu" class="menu-panel" role="menu" hidden>
+  <a href="about.html" target="_blank" rel="noopener" role="menuitem">About</a>
+  <a href="more.html" target="_blank" rel="noopener" role="menuitem">More</a>
+  <a href="contact.html" target="_blank" rel="noopener" role="menuitem">Contact</a>
+</div>
+</header>
 
 <main>
   <div class="container grid">
@@ -167,9 +229,5 @@
     });
   })();
 </script>
-<script src="./js/header-loader.js"
-        data-header="./partials/header.html"
-        data-css="./css/header.css"
-        data-scope="desktop"></script>
 </body>
 </html>

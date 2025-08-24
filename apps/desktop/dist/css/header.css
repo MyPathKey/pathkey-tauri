@@ -1,0 +1,39 @@
+:root {
+  --dark-green:#042316; --light-green:#1f3f2b; --gold:#cca242; --muted:#e8dec7; --radius:14px; --error:#ff6b6b;
+}
+
+/* Core header */
+header{background:var(--light-green);padding:12px 16px;position:sticky;top:0;z-index:10;border-bottom:1px solid #223c2a}
+.header-inner{position:relative;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:baseline;gap:6px;text-decoration:none;color:inherit}
+.logo-img{height:64px;width:auto;display:block}
+.tagline{font-size:1rem;align-self:baseline;font-weight:350;margin-left:0}
+
+/* Desktop nav + actions */
+.nav-desktop{display:none;gap:14px;align-items:center}
+.nav-desktop a{color:var(--muted);text-decoration:none;font-size:.95rem;opacity:.9}
+.nav-desktop a:hover{opacity:1}
+.actions{display:flex;align-items:center;gap:8px;}
+.icon{width:32px;height:32px;border-radius:0;outline:none;display:block}
+.icon img {width:100%;height:100%;display:block}
+button:focus-visible {outline:2px solid var(--gold);outline-offset:2px}
+button,.signin-btn,icon-btn {-webkit-tap-highlight-color:transparent}
+.icon-btn,.signin-btn{right:64px;display:flex;align-items:center;gap:3px;justify-content:center;padding:6px;border-radius:6px;margin-left:auto;border:none;background:transparent;color:#f3efe6;cursor:pointer}
+.icon-btn:hover,.signin-btn:hover{background:rgba(255,255,255,0.08)}
+.spacer{flex:1}
+
+/* Mobile dropdown menu */
+.menu-panel{display:none!important;position:absolute;right:16px;top:64px;background:linear-gradient(180deg,#0e281c,#0a2217);border:1px solid #234230;border-radius:12px;padding:10px;box-shadow:0 16px 40px -20px rgba(0,0,0,.6)}
+.menu-panel a{display:block;padding:10px 12px;border-radius:8px;color:#e7d7b3;text-decoration:none}
+.menu-panel a:hover{background:rgba(38,78,55,.2)}
+.menu-panel.open{display:block}
+
+/* Responsive */
+@media (max-width:900px){
+  .nav-desktop{display:none!important}
+}
+@media (min-width:900px){
+  .nav-desktop{display:flex}
+  #menuBtn{display:none!important}
+  .menu-panel{display:none!important}
+}

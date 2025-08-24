@@ -1,0 +1,36 @@
+<header>
+  <div class="header-inner">
+    <a class="brand" href="index.html">
+      <img class="logo-img" src="./assets/logo_text.png" alt="Path Key text"/>
+      <img class="logo-img" src="./assets/logo_key.png" alt="Path Key logo"/>
+      <span class="tagline">Web</span>
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="nav-desktop">
+      <a href="about.html">About</a>
+      <a href="more.html">More</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+
+    <div class="spacer"></div>
+
+    <!-- Actions: Sign in + Hamburger -->
+    <div class="actions">
+      <button class="signin-btn" id="signinBtn" title="Sign in" type="button">
+        <img src="./assets/signin.svg" class="icon" alt="Sign in"/>
+        <span>Sign in</span>
+      </button>
+      <button class="icon-btn" id="menuBtn" aria-label="Menu" aria-controls="mobileMenu" aria-expanded="false" type="button">
+        <img src="./assets/menu.svg" class="icon" alt="Menu"/>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile dropdown menu -->
+  <div id="mobileMenu" class="menu-panel" role="menu" hidden>
+    <a href="about.html" role="menuitem">About</a>
+    <a href="more.html" role="menuitem">More</a>
+    <a href="contact.html" role="menuitem">Contact</a>
+  </div>
+</header>
