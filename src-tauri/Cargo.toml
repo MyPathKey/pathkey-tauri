@@ -10,7 +10,7 @@ license = "MIT OR Proprietary"  # Umbrella expression; details in LICENSE files.
 tauri-build = { version = "2", features = [] }
 
 [dependencies]
-tauri = { version = "2", features = ["protocol-asset"] }
+tauri = { version = "2", features = [] }
 # Optional useful plugins; comment/uncomment as needed:
 # tauri-plugin-dialog = "2"
 # tauri-plugin-os = "2"
