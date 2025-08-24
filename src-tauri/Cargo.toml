@@ -4,7 +4,8 @@ version = "0.1.0"
 description = "PathKey™ Desktop — a Tauri app that runs the PathKey web interface."
 authors = ["PathKey"]
 edition = "2021"
-license = "MIT OR Proprietary"  # Umbrella expression; details in LICENSE files.
+license = "Apache-2.0 AND Proprietary"  # Umbrella expression; details in LICENSE files.
+build = "build.rs"
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }

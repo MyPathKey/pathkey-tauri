@@ -30,7 +30,6 @@
     "active": true,
     "category": "DeveloperTool",
     "targets": "all",
-    "icon": ["../public/icon.png"],
     "resources": [
       "../LICENSE",
       "../LICENSE-MIT",
