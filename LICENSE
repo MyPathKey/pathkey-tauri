@@ -1,7 +1,7 @@
-This project is dual-licensed:
+This project is multi-licensed:
 
-- Portions derived from upstream projects (e.g., Tauri templates) remain under the MIT License.
-  See `LICENSE-MIT` for details.
+- Portions derived from upstream projects (e.g., Tauri templates) remain under the MIT License and Apache 2.0 License.
+  See `LICENSE-MIT` and `LICENSE_APACHE-2.0` for details.
 
 - All MyPathKey™ code, branding, styling, and additions are proprietary and licensed under the
-  PathKey™ License. See `LICENSE-PATHKEY for details.
+  PathKey™ License. See `LICENSE-PATHKEY` for details.
