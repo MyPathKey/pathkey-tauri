@@ -1,18 +1,18 @@
 <p align="center">
-  <img src="./public/icon.png" alt="PathKey Icon" width="120" style="border-radius:20px;" />
+  <img src="./public/icon.png" alt="PathKey Icon" width="120" style="border-radius:25px;" />
 </p>
 
-<h1 align="center">PathKey Desktop</h1>
+<h1 align="center">PathKey</h1>
 
 <p align="center">
-  A Tauri-powered desktop app for the <strong>Path Key</strong> numerology engine and console UI.
+  A Tauri-powered desktop and mobile apps for the <strong>Path Key</strong> numerology engine and console UI.
 </p>
 
 ---
 
 ## ✨ About
 
-PathKey Desktop is a lightweight desktop client built with [Tauri v2](https://tauri.app) and static HTML/CSS/JS.
+PathKey is a lightweight desktop client and mobile app built with [Tauri v2](https://tauri.app) and static HTML/CSS/JS.
 It loads your frontend directly from `apps/desktop/dist` and packages as a secure, cross-platform binary.
 
 ---
@@ -35,17 +35,17 @@ Ensure you have:
 
 ```bash
 pnpm install
-
+```
 Run in dev mode
-
+```
 pnpm tauri dev
-
+```
 This launches a debug Tauri window that loads from apps/desktop/dist.
 
 Build release binary
-
+```
 pnpm tauri build
-
+```
 Your packaged binaries will be in src-tauri/target/release/.
 
 
@@ -53,11 +53,13 @@ Your packaged binaries will be in src-tauri/target/release/.
 
 📜 License
 
-This repo uses a dual license setup:
+This repo uses a multi license setup:
 
-MIT license for upstream Tauri-derived code (LICENSE-MIT)
+MIT license for upstream Awesome Tauri-derived code `LICENSE-MIT`
 
-Proprietary license for PathKey™ additions (LICENSE-PATHKEY)
+Apache 2.0 License for upstream Tauri-derived code `LICENSE_APACHE-2.0`
+
+Proprietary license for PathKey™ additions `LICENSE-PATHKEY`
 
 Attribution notices in NOTICE
 
