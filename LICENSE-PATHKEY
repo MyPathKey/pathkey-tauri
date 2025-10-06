@@ -1,29 +1,152 @@
-PathKey™ Proprietary License
-Version 1.0, 2025
+PATH KEY COMBINED LICENSE  
+Version 1.0 — Effective Date: October 6, 2025  
 
-Copyright (c) 2025 PathKey™, MyPathKey™
+==================================================================
+OVERVIEW
+==================================================================
 
-Permission is hereby granted to view, study, and run the source code of PathKey™
-for personal and non-commercial purposes only.
+This combined license governs all software, source code, and related assets
+contained in the Path Key desktop and web application projects (“Software”).
 
-You are NOT permitted to:
-- Redistribute the source code or compiled binaries, in whole or in part,
-  without express written permission.
-- Publish derivative works or modifications of this software under any name.
-- Use the PathKey™ name, trademarks, or branding in any way without explicit
-  written authorization.
+The Software includes both:
 
-Commercial use, sublicensing, or distribution of this software is strictly
-prohibited unless you have obtained a commercial license agreement from PathKey™.
+(a) **Proprietary Components** — Confidential, closed-source code, assets, and designs 
+owned by **Anthony M. Lenk** (“Owner”), including the Path Key Engine and all 
+compiled Path Key applications; and  
 
-This software is provided "AS IS", without warranty of any kind, express or
-implied, including but not limited to the warranties of merchantability,
-fitness for a particular purpose, and noninfringement. In no event shall the
-authors or copyright holders be liable for any claim, damages, or other
-liability, whether in an action of contract, tort, or otherwise, arising from,
-out of, or in connection with the software or the use or other dealings in the
-software.
+(b) **Open-Source Components** — Specific submodules, crates, or utilities 
+explicitly marked as open source and released under the dual MIT / Apache 2.0 license 
+terms set forth below.
 
-For licensing inquiries, contact:
-Anthony Lenk
-nfboxer2010@gmail.com
+Unless otherwise noted by a license header, file notice, or directory‐level LICENSE file,
+all content within the Path Key repositories and distributed applications is 
+deemed **proprietary**.
+
+==================================================================
+SECTION 1 — PATH KEY PROPRIETARY LICENSE
+==================================================================
+
+Copyright © 2025 Anthony M. Lenk. All Rights Reserved.
+
+The proprietary portions of the Software, including but not limited to the Path Key
+Engine, numerology logic, datasets, user interface design, artwork, branding, 
+and compiled binaries, are the exclusive property of the Owner and protected by 
+copyright and international intellectual-property laws.
+
+Unauthorized reproduction, modification, redistribution, or public display of
+any proprietary component is strictly prohibited without prior written consent
+from the Owner.
+
+The Path Key Engine was authored and developed by **Nick Chiaravalle** and is
+licensed exclusively to Path Key (Anthony M. Lenk) for integration within the
+Path Key ecosystem.  The Author retains all intellectual-property rights in the
+underlying engine code except as expressly licensed for Path Key use.
+
+All rights not expressly granted remain reserved.
+
+==================================================================
+SECTION 2 — OPEN-SOURCE COMPONENTS  
+Dual-Licensed under the MIT License and Apache License 2.0
+==================================================================
+
+Any source file, crate, or directory containing the notice  
+`SPDX-License-Identifier: MIT OR Apache-2.0`  
+is made available under the terms of both licenses below.
+
+------------------------------------------------------------------
+MIT License
+------------------------------------------------------------------
+Copyright (c) 2025 Path Key Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the “Software”), to deal in
+the Software without restriction, including without limitation the rights to
+use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+of the Software, and to permit persons to whom the Software is furnished to do
+so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+------------------------------------------------------------------
+Apache License Version 2.0, January 2004  
+http://www.apache.org/licenses/
+------------------------------------------------------------------
+
+TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+
+1. Definitions  
+“License” shall mean this Apache License 2.0 document.  
+“Licensor” shall mean the copyright owner or entity authorizing the license.  
+“Work” shall mean the work of authorship under this License, in Source or
+Object form.
+
+2. Grant of Copyright License  
+Subject to the terms of this License, each Contributor grants You a
+perpetual, worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+copyright license to reproduce, prepare Derivative Works of, publicly display,
+publicly perform, sublicense, and distribute the Work and Derivative Works.
+
+3. Grant of Patent License  
+Each Contributor grants You a perpetual, worldwide, non-exclusive, no-charge,
+royalty-free, irrevocable patent license to make, use, sell, and distribute
+the Work, subject to Section 3’s conditions.
+
+4. Redistribution  
+You must provide a copy of this License and a NOTICE file identifying 
+changes and attribution when redistributing.
+
+5. Disclaimer of Warranty  
+Unless required by applicable law or agreed to in writing, Licensor provides
+the Work (and each Contributor provides its contributions) on an “AS IS”
+BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
+
+For the full license text, visit <http://www.apache.org/licenses/LICENSE-2.0>.
+
+------------------------------------------------------------------
+END OF OPEN-SOURCE TERMS
+------------------------------------------------------------------
+
+==================================================================
+SECTION 3 — TRADEMARK AND BRANDING NOTICE
+==================================================================
+
+**Path Key**, **My Path Key**, and the associated key logo are trademarks and
+service marks of **Anthony M. Lenk**.  
+Use of these marks, the Path Key name, or related branding in derivative
+projects or promotional materials is prohibited without written authorization.
+
+==================================================================
+SECTION 4 — GOVERNING LAW
+==================================================================
+
+This License shall be governed by and construed in accordance with the laws of
+the **State of New York, United States of America**, without regard to its
+conflict-of-law principles.  
+Disputes shall be submitted exclusively to the state or federal courts located
+in **Erie County, New York**.
+
+==================================================================
+SECTION 5 — CONTACT INFORMATION
+==================================================================
+
+**Owner (Path Key):**  
+Anthony M. Lenk  
+✉ nfboxer2010@gmail.com  
+
+**Author (Path Key Engine):**  
+Nick Chiaravalle  
+✉ chirv@oxy2k.org
+
+Official Website — https://mypathkey.com
+
+==================================================================
+END OF COMBINED LICENSE
+==================================================================
