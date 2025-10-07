@@ -28,12 +28,6 @@ members = [
   "bench/tests/cpu_intensive/src-tauri",
   "bench/tests/files_transfer/src-tauri",
   "bench/tests/helloworld/src-tauri",
-
-  # examples
-  "examples/file-associations/src-tauri",
-  "examples/resources/src-tauri",
-  "examples/api/src-tauri",
-  "examples/api/src-tauri/tauri-plugin-sample",
 ]
 resolver = "2"
 
