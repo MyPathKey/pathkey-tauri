@@ -48,6 +48,36 @@ pnpm tauri build
 ```
 Your packaged binaries will be in src-tauri/target/release/.
 
+### Compile with Docker
+
+```bash
+docker run --rm -it -v "$PWD":/work -w /work \
+  -e APPIMAGE_EXTRACT_AND_RUN=1 \
+  ubuntu:22.04 bash -lc '
+    set -eux
+
+    # deps for tauri + bundling
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y \
+      curl build-essential pkg-config file patchelf desktop-file-utils \
+      libgtk-3-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev \
+      gstreamer1.0-plugins-base gstreamer1.0-plugins-good gstreamer1.0-plugins-bad \
+      gstreamer1.0-libav
+
+    # rust + tauri
+    curl -fsSL https://sh.rustup.rs | sh -s -- -y
+    . "$HOME/.cargo/env"
+    cargo install tauri-cli --locked
+
+    # (optional) ensure your Rust crates are up to date locally
+    # sed -n "1,120p" src-tauri/Cargo.toml
+    cargo update -p tauri -p tauri-build@2.4.1
+
+    # build
+    cargo tauri build --verbose
+  '
+```
 
 ---
 
