@@ -23,11 +23,6 @@ members = [
   "crates/tests/restart",
   "crates/tests/acl",
 
-  # bench
-  "bench",
-  "bench/tests/cpu_intensive/src-tauri",
-  "bench/tests/files_transfer/src-tauri",
-  "bench/tests/helloworld/src-tauri",
 ]
 resolver = "2"
 
