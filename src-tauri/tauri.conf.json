@@ -6,9 +6,13 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "My Path Key",
         "width": 1200,
         "height": 800,
+        "decorations": false,
+        "transparent": false,
+        "shadow": true,
         "resizable": true,
         "url": "https://mypathkey.com",
         "devtools": false,
