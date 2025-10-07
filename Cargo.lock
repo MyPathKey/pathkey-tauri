@@ -618,36 +618,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bench_cpu_intensive"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tauri",
- "tauri-build 2.3.1",
-]
-
-[[package]]
-name = "bench_files_transfer"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tauri",
- "tauri-build 2.3.1",
-]
-
-[[package]]
-name = "bench_helloworld"
-version = "0.1.0"
-dependencies = [
- "serde",
- "serde_json",
- "tauri",
- "tauri-build 2.3.1",
-]
-
-[[package]]
 name = "bit-set"
 version = "0.8.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -8769,17 +8739,6 @@ dependencies = [
  "embed-resource",
  "indexmap 2.7.0",
  "toml 0.9.4",
-]
-
-[[package]]
-name = "tauri_bench"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "serde",
- "serde_json",
- "tempfile",
- "time",
 ]
 
 [[package]]
