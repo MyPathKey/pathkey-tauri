@@ -467,7 +467,7 @@ version = "0.8.1"
 criteria = "safe-to-deploy"
 
 [[exemptions.libredox]]
-version = "0.0.1"
+version = "0.0.5"
 criteria = "safe-to-deploy"
 
 [[exemptions.libxdo]]

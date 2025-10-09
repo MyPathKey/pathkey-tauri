@@ -1,6 +1,6 @@
 [package]
 name = "pathkey-desktop"
-version = "0.0.1"
+version = "0.0.5"
 description = "PathKey™ Desktop — a Tauri app that runs the PathKey web interface."
 authors = ["PathKey"]
 edition = "2021"

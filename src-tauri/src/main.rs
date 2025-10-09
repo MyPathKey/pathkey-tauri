@@ -1,240 +1,125 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::window::{ProgressBarState, ProgressBarStatus};
+use tauri::{Manager, Url};
 
 #[tauri::command]
-fn set_progress(webview: tauri::Webview, indeterminate: bool) {
-  let win = webview.window();
-  let _ = if indeterminate {
-    win.set_progress_bar(ProgressBarState {
-      status: Some(ProgressBarStatus::Indeterminate),
-      progress: None,
-    })
-  } else {
-    win.set_progress_bar(ProgressBarState {
-      status: Some(ProgressBarStatus::None),
-      progress: None,
-    })
+fn window_action(webview: tauri::Webview, action: String) {
+  let window = webview.window();
+  match action.as_str() {
+    "min" => { let _ = window.minimize(); }
+    "max" => {
+      if window.is_maximized().unwrap_or(false) { let _ = window.unmaximize(); }
+      else { let _ = window.maximize(); }
+    }
+    "close" => { let _ = window.close(); }
+    _ => {}
+  }
+}
+
+#[tauri::command]
+fn nav_action(webview: tauri::Webview, action: String) {
+  // show spinner if overlay present
+  let _ = webview.eval("document.getElementById('__pk_spinner')?.classList.add('__pk_show')");
+  // drive top-level navigation
+  let js = match action.as_str() {
+    "back" => "history.back()",
+    "forward" => "history.forward()",
+    "reload" => "location.reload()",
+    _ => "void 0",
   };
+  let _ = webview.eval(js);
 }
 
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![set_progress])
+    .invoke_handler(tauri::generate_handler![window_action, nav_action])
+    .setup(|app| {
+      // load real site directly
+      let win = app.get_webview_window("main").expect("main window");
+      win.navigate(Url::parse("https://mypathkey.com").unwrap())?;
+      Ok(())
+    })
     .on_page_load(|webview, _| {
       let js = r#"
-        (function () {
-          if (window.__pkToolbarInjected) return;
-          window.__pkToolbarInjected = true;
+      (function(){
+        if(document.getElementById('__pk_titlebar')) return;
 
-          const css = `
-            :root{
-              --glass-bg: rgba(12,33,24,.55);            /* deep emerald */
-              --glass-grad1: rgba(18,52,38,.65);
-              --glass-grad2: rgba(8,24,18,.45);
-              --glass-border: rgba(255,214,110,.35);     /* soft gold edge */
-              --gold: #f2c66e;
-              --gold-weak: rgba(242,198,110,.35);
-              --ink: #e6f1ea;                            /* mint-ivory text */
-              --ink-weak: rgba(230,241,234,.7);
-              --btn-bg: rgba(255,255,255,.08);
-              --btn-bg-hover: rgba(255,255,255,.14);
-              --btn-bg-active: rgba(255,255,255,.22);
-              --btn-border: rgba(255,255,255,.18);
-              --pill-bg: rgba(20,48,36,.55);
-              --pill-border: rgba(255,255,255,.16);
-              --shadow-outer: 0 14px 38px rgba(0,0,0,.45), 0 1px 0 rgba(255,255,255,.06) inset;
-              --shadow-inner: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(0,0,0,.35);
-              --glow-bottom: 0 2px 0 rgba(255, 215, 130, .35);
-            }
-
-            .pk-toolbar, .pk-loader {
-              font: 13px/1.2 ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif;
-              z-index: 2147483647;
-              color: var(--ink);
-              text-shadow: 0 1px 0 rgba(0,0,0,.4);
-            }
-
-            /* ===== Toolbar (glass emerald + gold accents) ===== */
-            .pk-toolbar {
-              position: fixed; inset: 0 0 auto 0; height: 46px;
-              display: grid;
-              grid-template-columns: 1fr auto 1fr;       /* center address pill */
-              align-items: center;
-              padding: 6px 10px;
-              background:
-                linear-gradient(180deg, var(--glass-grad1), var(--glass-grad2)),
-                var(--glass-bg);
-              -webkit-backdrop-filter: blur(12px) saturate(1.25);
-                      backdrop-filter: blur(12px) saturate(1.25);
-              border-bottom: 1px solid var(--glass-border);
-              box-shadow: var(--shadow-outer), var(--glow-bottom);
-              user-select: none;
-              -webkit-app-region: drag;
-            }
-
-            .pk-left, .pk-right { display:flex; gap:8px; align-items:center; -webkit-app-region: no-drag; }
-            .pk-left { justify-content: flex-start; }
-            .pk-right { justify-content: flex-end; }
-
-            .pk-btn {
-              -webkit-app-region: no-drag;
-              display:inline-flex; align-items:center; justify-content:center;
-              width:34px; height:30px;
-              border-radius: 10px;
-              background: var(--btn-bg);
-              border: 1px solid var(--btn-border);
-              box-shadow: var(--shadow-inner);
-              color: var(--ink);
-              cursor: pointer;
-              transition: transform .08s ease, background .12s ease, box-shadow .12s ease;
-            }
-            .pk-btn:hover { background: var(--btn-bg-hover); }
-            .pk-btn:active { background: var(--btn-bg-active); transform: translateY(1px); }
-            .pk-btn[disabled]{ opacity:.45; cursor:default; filter:grayscale(.2); }
-
-            .pk-btn svg { width:16px; height:16px; fill: currentColor; filter: drop-shadow(0 1px 0 rgba(0,0,0,.35)); }
-
-            /* Center pill address bar with beveled 3D depth */
-            .pk-center {
-              display:flex; justify-content:center; pointer-events:none;  /* keep bar draggable except inner input */
-            }
-            .pk-url {
-              pointer-events:auto;
-              min-width: 40vw; max-width: 64vw; height: 32px;
-              display:flex; align-items:center; gap:10px; padding:0 12px;
-              background: var(--pill-bg);
-              border-radius: 12px;
-              border: 1px solid var(--pill-border);
-              box-shadow: inset 0 1px 0 rgba(255,255,255,.22), inset 0 -1px 0 rgba(0,0,0,.45), 0 6px 16px rgba(0,0,0,.25);
-              color: var(--ink);
-              overflow:hidden; white-space:nowrap; text-overflow:ellipsis;
-            }
-            .pk-url .dot {
-              width:10px; height:10px; border-radius:50%;
-              background: radial-gradient(circle at 30% 30%, var(--gold), rgba(242,198,110,.35) 60%, rgba(242,198,110,.1) 100%);
-              box-shadow: 0 0 10px var(--gold-weak);
-              border: 1px solid rgba(0,0,0,.4);
-            }
-            .pk-url .text { opacity:.95 }
-
-            /* Push page down so it isn't covered */
-            html:not(.pk-has-margin) body { margin-top: 46px !important; }
-
-            /* ===== Loader (glass chip) ===== */
-            .pk-loader {
-              position: fixed; top: 56px; right: 14px;
-              background: linear-gradient(180deg, rgba(18,52,38,.85), rgba(10,28,21,.82));
-              -webkit-backdrop-filter: blur(10px) saturate(1.2);
-                      backdrop-filter: blur(10px) saturate(1.2);
-              color: var(--ink);
-              border: 1px solid var(--glass-border);
-              border-radius: 12px; padding: 10px 12px;
-              display: none; align-items: center; gap: 10px;
-              box-shadow: 0 12px 28px rgba(0,0,0,.45);
-            }
-            .pk-loader.show { display: flex; }
-            .pk-spinner {
-              width: 16px; height:16px; border-radius: 50%;
-              border: 2px solid rgba(255,255,255,.22);
-              border-top-color: var(--gold);
-              animation: pkspin 1s linear infinite;
-              box-shadow: 0 0 10px rgba(242,198,110,.35);
-            }
-            @keyframes pkspin { to { transform: rotate(360deg) } }
-
-            /* Fallback if backdrop-filter unsupported */
-            @supports not ((backdrop-filter: blur(10px)) or (-webkit-backdrop-filter: blur(10px))) {
-              .pk-toolbar, .pk-loader { background-color: rgba(12,33,24,.92); }
-            }
-          `;
-
-          const style = document.createElement('style');
-          style.textContent = css;
-          document.documentElement.appendChild(style);
-          document.documentElement.classList.add('pk-has-margin');
-
-          // ---- Toolbar DOM ----
-          const bar = document.createElement('div');
-          bar.className = 'pk-toolbar';
-          bar.innerHTML = `
-            <div class="pk-left">
-              <button class="pk-btn" id="pk-back" title="Back" aria-label="Back">
-                <svg viewBox="0 0 24 24"><path d="M15.5 4.5a1 1 0 0 1 0 1.4L10.4 11l5.1 5.1a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg>
-              </button>
-              <button class="pk-btn" id="pk-forward" title="Forward" aria-label="Forward">
-                <svg viewBox="0 0 24 24"><path d="M8.5 19.5a1 1 0 0 1 0-1.4L13.6 13 8.5 7.9a1 1 0 1 1 1.4-1.4l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0z"/></svg>
-              </button>
-              <button class="pk-btn" id="pk-reload" title="Reload" aria-label="Reload">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.64 5.5h-2.04A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
-                </svg>
-              </button>
-            </div>
-
-            <div class="pk-center">
-              <div class="pk-url" id="pk-url">
-                <span class="dot" aria-hidden="true"></span>
-                <span class="text" id="pk-url-text"></span>
-              </div>
-            </div>
-
-            <div class="pk-right">
-              <!-- reserved for future (e.g., settings/help) -->
-            </div>
-          `;
-          document.body.appendChild(bar);
-
-          const backBtn = bar.querySelector('#pk-back');
-          const fwdBtn  = bar.querySelector('#pk-forward');
-          const relBtn  = bar.querySelector('#pk-reload');
-          const urlText = bar.querySelector('#pk-url-text');
-
-          backBtn.addEventListener('click', () => history.back());
-          fwdBtn.addEventListener('click', () => history.forward());
-          relBtn.addEventListener('click', () => location.reload());
-
-          function updateUrlBox(){ urlText.textContent = location.href; }
-          function updateNavButtons(){
-            backBtn.disabled = (performance?.navigation?.type === 0 && document.referrer === '') && history.length <= 1;
-            fwdBtn.disabled = false; /* cannot reliably detect forward availability cross-origin */
+        const css = `
+          :root{--gold:#f2c66e;--edge:#14924e;--glow:rgba(20,146,78,.45);}
+          html,body{margin:0;height:100%;overflow:hidden;color:var(--gold);}
+          #__pk_titlebar{
+            position:fixed;top:0;left:0;right:0;height:34px;z-index:2147483647;
+            display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+            padding:2px 6px;background:rgba(12,40,28,.92);
+            backdrop-filter:blur(10px) saturate(1.15);
+            -webkit-backdrop-filter:blur(10px) saturate(1.15);
+            border-bottom:1px solid rgba(255,255,255,.12);
+            box-shadow:0 4px 14px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);
+            color:var(--gold);-webkit-app-region:drag;border-top-left-radius:14px;border-top-right-radius:14px;
           }
-
-          // ---- Loader ----
-          const loader = document.createElement('div');
-          loader.className = 'pk-loader';
-          loader.innerHTML = `<div class="pk-spinner"></div><div>Loading…</div>`;
-          document.body.appendChild(loader);
-
-          async function nativeProgress(on){
-            try { await window.__TAURI__.invoke('set_progress', { indeterminate: !!on }); } catch {}
+          #__pk_l,#__pk_r{display:flex;gap:6px;align-items:center}
+          #__pk_title{justify-self:center;font-weight:700;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .__pk_btn{
+            -webkit-app-region:no-drag;width:28px;height:26px;border-radius:8px;
+            display:inline-flex;align-items:center;justify-content:center;
+            background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+            color:var(--gold);cursor:pointer;transition:background .12s,transform .06s;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.5);
           }
-          function flashLoader(){
-            loader.classList.add('show');
-            nativeProgress(true);
-            setTimeout(() => { loader.classList.remove('show'); nativeProgress(false); }, 720);
-            updateUrlBox(); updateNavButtons();
+          .__pk_btn:hover{background:rgba(255,255,255,.14)}.__pk_btn:active{transform:translateY(1px)}
+          .__pk_btn.__pk_close:hover{background:rgba(255,60,60,.55);color:#fff}
+          .__pk_btn svg{width:14px;height:14px;fill:currentColor;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
+          #__pk_ring{position:fixed;inset:0;pointer-events:none;z-index:2147483599;border-radius:16px;
+            box-shadow:0 0 0 2px var(--edge) inset,0 0 18px 2px var(--glow);
+            outline:1px solid rgba(0,0,0,.35);outline-offset:-1px;}
+          #__pk_spinner{
+            position:fixed;top:34px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;
+            pointer-events:none;opacity:0;transition:opacity .18s ease;z-index:2147483647;
           }
+          #__pk_spinner.__pk_show{opacity:1}
+          #__pk_spinner .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);
+            box-shadow:0 0 12px rgba(242,198,110,.6);animation:__pk_b 0.9s infinite alternate}
+          #__pk_spinner .dot:nth-child(2){animation-delay:.15s;margin:0 8px}
+          #__pk_spinner .dot:nth-child(3){animation-delay:.30s}
+          @keyframes __pk_b{from{transform:translateY(0);opacity:.6}to{transform:translateY(-9px);opacity:1}}
+        `;
+        const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
 
-          // Trigger on navigations
-          window.addEventListener('beforeunload', () => { loader.classList.add('show'); nativeProgress(true); });
+        const bar=document.createElement('div');
+        bar.id='__pk_titlebar';bar.setAttribute('data-tauri-drag-region','');
+        bar.innerHTML=`
+          <div id="__pk_l" data-tauri-drag-region="no-drag">
+            <button class="__pk_btn" id="__pk_back" title="Back"><svg viewBox="0 0 24 24"><path d="M15.5 4.5a1 1 0 0 1 0 1.4L10.4 11l5.1 5.1a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg></button>
+            <button class="__pk_btn" id="__pk_forward" title="Forward"><svg viewBox="0 0 24 24"><path d="M8.5 19.5a1 1 0 0 1 0-1.4L13.6 13 8.5 7.9a1 1 0 1 1 1.4-1.4l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0z"/></svg></button>
+            <button class="__pk_btn" id="__pk_reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.64 5.5h-2.04A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+          </div>
+          <div id="__pk_title" data-tauri-drag-region="no-drag">Path&nbsp;Key</div>
+          <div id="__pk_r" data-tauri-drag-region="no-drag">
+            <button class="__pk_btn" id="__pk_min" title="Minimize"><svg viewBox="0 0 24 24"><path d="M5 12h14v1H5z"/></svg></button>
+            <button class="__pk_btn" id="__pk_max" title="Maximize/Restore"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/></svg></button>
+            <button class="__pk_btn __pk_close" id="__pk_close" title="Close"><svg viewBox="0 0 24 24"><path d="M6.4 5l5.6 5.6L17.6 5l1.4 1.4L13.4 12l5.6 5.6-1.4 1.4L12 13.4 6.4 19l-1.4-1.4L10.6 12 5 6.4z"/></svg></button>
+          </div>
+        `;
+        document.body.appendChild(bar);
+        const ring=document.createElement('div');ring.id='__pk_ring';document.body.appendChild(ring);
+        const spinner=document.createElement('div');spinner.id='__pk_spinner';
+        spinner.innerHTML='<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>';document.body.appendChild(spinner);
 
-          const _ps = history.pushState, _rs = history.replaceState;
-          history.pushState = function(){ _ps.apply(this, arguments); flashLoader(); };
-          history.replaceState = function(){ _rs.apply(this, arguments); flashLoader(); };
-          window.addEventListener('popstate', flashLoader);
+        const updateTitle=()=>{const el=document.getElementById('__pk_title');if(el)el.textContent=document.title||'Path Key';};
+        updateTitle();new MutationObserver(updateTitle).observe(document.querySelector('title')||document.head,{childList:true,subtree:true});
 
-          // Initial
-          updateUrlBox(); updateNavButtons();
-          window.addEventListener('load', () => { loader.classList.remove('show'); nativeProgress(false); });
-        })();
+        const hide=()=>spinner.classList.remove('__pk_show');window.addEventListener('load',hide);
+
+        const invoke=(c,p)=>(window.__TAURI__?.core?.invoke||window.__TAURI__?.invoke)?.(c,p);
+        document.getElementById('__pk_back').onclick=()=>invoke('nav_action',{action:'back'});
+        document.getElementById('__pk_forward').onclick=()=>invoke('nav_action',{action:'forward'});
+        document.getElementById('__pk_reload').onclick=()=>invoke('nav_action',{action:'reload'});
+        document.getElementById('__pk_min').onclick=()=>invoke('window_action',{action:'min'});
+        document.getElementById('__pk_max').onclick=()=>invoke('window_action',{action:'max'});
+        document.getElementById('__pk_close').onclick=()=>invoke('window_action',{action:'close'});
+      })();
       "#;
-
       let _ = webview.eval(js);
-
-      // Clear native progress if any
-      let win = webview.window();
-      let _ = win.set_progress_bar(ProgressBarState { status: Some(ProgressBarStatus::None), progress: None });
     })
     .run(tauri::generate_context!())
     .expect("error while running tauri app");
