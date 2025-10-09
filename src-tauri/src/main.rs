@@ -38,39 +38,42 @@ fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![window_action, nav_action])
     .setup(|app| {
-      // One handle to call .listen with (&self), another moved into the closure
-      let app_handle = app.handle().clone();
-      let app_handle_for_event = app_handle.clone();
+      // NOTE: Ensure tauri.conf.json has `main` visible:false, and a frameless `splash`.
+      // We'll only show/navigate `main` after splash is done or the timer fires.
 
-      app_handle.listen("splash-finished", move |_evt| {
+      // Event path — when the splash finishes
+      let app_handle_for_event = app.handle().clone();
+      app.handle().listen("splash-finished", move |_evt| {
         if let Some(s) = app_handle_for_event.get_webview_window("splash") {
           let _ = s.close();
         }
         if let Some(m) = app_handle_for_event.get_webview_window("main") {
+          let _ = m.navigate(Url::parse("https://mypathkey.com").unwrap());
           let _ = m.show();
+          let _ = m.set_focus();
         }
       });
 
-      // Timer path: use an independent clone as well
+      // Fallback timer — in case the event doesn't fire
       let app_handle_for_timer = app.handle().clone();
       tauri::async_runtime::spawn(async move {
         tokio::time::sleep(Duration::from_millis(10_500)).await;
-        if let Some(s) = app_handle_for_timer.get_webview_window("splash") {
-          let _ = s.close();
-        }
-        if let Some(m) = app_handle_for_timer.get_webview_window("main") {
-          let _ = m.show();
+        if app_handle_for_timer.get_webview_window("splash").is_some() {
+          if let Some(s) = app_handle_for_timer.get_webview_window("splash") {
+            let _ = s.close();
+          }
+          if let Some(m) = app_handle_for_timer.get_webview_window("main") {
+            let _ = m.navigate(Url::parse("https://mypathkey.com").unwrap());
+            let _ = m.show();
+            let _ = m.set_focus();
+          }
         }
       });
-
-      // Initial navigation
-      if let Some(win) = app.get_webview_window("main") {
-        let _ = win.navigate(Url::parse("https://mypathkey.com").unwrap());
-      }
 
       Ok(())
     })
     .on_page_load(|webview, _| {
+      // Custom titlebar injection (safe to run on any page)
       let js = r#"
       (function(){
         if(document.getElementById('__pk_titlebar')) return;

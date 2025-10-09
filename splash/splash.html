@@ -7,8 +7,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Loading…</title>
 <style>
-  html, body { height:100%; margin:0; background:#000; }
   canvas { display:block; width:100vw; height:100vh; background:#000; }
+
+  html,body{margin:0;height:100%;background:transparent;overflow:hidden}
+  body{display:flex;align-items:center;justify-content:center}
 </style>
 </head>
 <body>
@@ -264,6 +266,18 @@ addEventListener('resize', ()=>{ initSwirl(); });
 
 /* Utility */
 function rand(a,b){ return a + Math.random()*(b-a); }
+</script>
+<script>
+  const emit = (name, payload) =>
+    (window.__TAURI__?.event?.emit || window.__TAURI__?.core?.emit)?.(name, payload);
+
+  // Example: after CSS/JS animation completes
+  function onAnimationDone() {
+    emit('splash-finished');
+  }
+
+  // If you can’t hook the actual end, time it:
+  // setTimeout(() => emit('splash-finished'), 3000);
 </script>
 </body>
 </html>

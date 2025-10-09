@@ -1,7 +1,7 @@
 # Copyright 2025 Anthony Lenk (owner, Path Key), Nicholas Chiaravalle (author)
 [package]
 name = "pathkey-desktop"
-version = "0.0.5"
+version = "0.1.0"
 description = "PathKey™ Desktop — a Tauri app that runs the PathKey web interface."
 authors = ["PathKey"]
 edition = "2021"
