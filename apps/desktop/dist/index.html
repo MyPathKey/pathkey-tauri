@@ -1,175 +1,140 @@
-<!DOCTYPE html><html lang="en">
+<!doctype html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self' https://mypathkey.com; img-src * data: blob:; media-src * blob:; frame-src https://mypathkey.com; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src *"
+  />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Path Key • Console</title>
+  <title>Path Key Desktop</title>
   <style>
-    :root {
-      --dark-green:#042316; --light-green:#1f3f2b; --gold:#cca242; --muted:#e8dec7; --radius:14px;
-      --error:#ff6b6b;
+    :root{
+      --bg:#081a12; --glass:rgba(12,40,28,.92);
+      --edge:#14924e; --glow:rgba(20,146,78,.45); --gold:#f2c66e;
+      --bar-h:34px;
+      --radius:14px;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,Helvetica,sans-serif;background:var(--dark-green);color:#fffaf0}
-    header{background:var(--light-green);padding:12px 16px;position:sticky;top:0;z-index:10;border-bottom:1px solid #223c2a}
-    .header-inner{position:relative;max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px}
-    .brand{display:flex;align-items:baseline;gap:6px;text-decoration:none;color:inherit}
-    .logo-img{height:64px;width:auto;display:block}
-    .tagline{font-size:1rem;align-self:baseline;font-weight:350;margin-left:0}
+    html, body {
+      height: 100%; width: 100%; margin: 0; padding: 0;
+      background: var(--bg); color: var(--gold);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, sans-serif;
+      overflow: hidden; /* ← no scrollbars in our UI */
+    }
+    .window {
+      position: fixed; inset: 0;
+      display: grid;
+      grid-template-rows: var(--bar-h) 1fr;
+      border-radius: var(--radius);
+      background: var(--glass);
+      -webkit-backdrop-filter: blur(10px) saturate(1.15);
+              backdrop-filter: blur(10px) saturate(1.15);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
+    }
+    /* full border ring */
+    .ring {
+      position: fixed; inset: 0; pointer-events: none;
+      border-radius: calc(var(--radius) + 2px);
+      box-shadow: 0 0 0 2px var(--edge) inset, 0 0 18px 2px var(--glow);
+      outline: 1px solid rgba(0,0,0,.35); outline-offset:-1px;
+    }
 
-    /* Layout / cards */
-    main{padding:24px 16px}
-    .container{max-width:1100px;margin:0 auto}
-    .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
-    @media (max-width:900px){.nav-desktop{display:none!important};.grid{grid-template-columns:1fr}}
-    .card{background:linear-gradient(180deg,#0e281c,#0a2217);border:1px solid #234230;border-radius:var(--radius);padding:18px;box-shadow:0 24px 60px -30px rgba(0,0,0,.55)}
-    .eyebrow{color:var(--muted);letter-spacing:.12em;text-transform:uppercase;font-size:.78rem}
-    .title{font-size:clamp(1.4rem,3vw,2.1rem);line-height:1.2;margin:.35rem 0;color:#f6e9c7}
-    .muted{color:#d7caa9}
+    .titlebar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      padding: 2px 8px;
+      height: var(--bar-h);
+      border-bottom: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 4px 14px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
+      color: var(--gold);
+    }
+    .l, .r { display: flex; gap: 6px; align-items: center; }
+    .title {
+      justify-self: center; font-weight: 700; letter-spacing: .15px; white-space: nowrap;
+      text-shadow: 0 1px 0 rgba(0,0,0,.5);
+    }
 
-    .panel{display:grid;gap:12px;margin-top:12px}
-    label{font-size:.92rem;color:var(--muted)}
-    input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid #274a33;background:#0c2418;color:#fffaf0;outline:none}
-    input::placeholder{color:#bdae90}
-    .error{color:var(--error);font-size:.9rem;margin-top:4px}
+    .btn {
+      width: 28px; height: 24px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 8px;
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      color: var(--gold);
+      cursor: pointer;
+      transition: background .12s, transform .08s;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(0,0,0,.45);
+    }
+    .btn:hover { background: rgba(255,255,255,.16); }
+    .btn:active { transform: translateY(1px); }
+    .close:hover { background: rgba(255,60,60,.5); color: #fff; }
+    .btn svg { width: 14px; height: 14px; fill: currentColor; filter: drop-shadow(0 1px 0 rgba(0,0,0,.35)); }
 
-    .buttons{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
-    button{appearance:none;border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer}
-    .btn-primary{background:var(--gold);color:#2a1c00;box-shadow:0 10px 24px -10px rgba(204,162,66,.6)}
-    .btn-primary:hover{filter:brightness(1.05)}
-    .btn-ghost{background:transparent;color:#fffaf0;outline:1px solid #2a4a34}
-    .btn-ghost:hover{background:rgba(38,78,55,.2)}
-
-    .features{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
-    @media (max-width:900px){.features{grid-template-columns:1fr}}
-    .feature{border:1px dashed #2a4a34;border-radius:12px;padding:14px;position:relative;cursor:pointer;transition:transform .15s ease,box-shadow .2s ease,border-color .2s ease;overflow:hidden}
-    .feature:hover{transform:translateY(-1px);border-color:#2f5a3d;box-shadow:0 10px 26px -16px rgba(0,0,0,.55)}
-    .feature h3{margin:.2rem 0 .35rem;color:#f6e9c7}
-    .feature .value{display:block;transition:opacity .15s ease}
-    .feature .desc{display:none;color:#e8dec7}
-    .feature:hover .value{display:none}
-    .feature:hover .desc{display:block}
-    .feature:active{transform:translateY(0) scale(.995)}
-    .aura{box-shadow:0 0 0 2px rgba(204,162,66,.6),0 0 24px 6px rgba(204,162,66,.35),inset 0 0 0 1px rgba(204,162,66,.5);border-color:#cca242!important}
-
-    .tip{margin-top:10px;font-size:.86rem;color:#d7caa9;border-left:3px solid var(--gold);padding:8px 10px;background:rgba(204,162,66,.08);border-radius:8px}
-    footer{border-top:1px solid #22402d;margin-top:28px;color:#d7caa9}
-    .footer-inner{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;justify-content:center;}
-
+    .content { position: relative; }
+    .site {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      border: 0; background: transparent;
+    }
   </style>
 </head>
 <body>
-
-<main>
-  <div class="container grid">
-    <section class="card">
-      <div class="eyebrow">Unlock your path</div>
-      <h1 class="title">Path Key Web</h1>
-      <p class="muted">Your life was predetermined when you were born. Enter your birthday below to find out your path.</p>
-
-      <div id="calculator" class="panel">
-        <label for="bday">Birthday</label>
-        <input id="bday" type="date" placeholder="12/05/1987" min="1900-01-01" max="2099-12-31" />
-        <p id="bdayError" class="error" hidden>Please select a valid birthday.</p>
-        <div class="buttons">
-          <button id="unlockBtn" class="btn-primary" type="button">Unlock</button>
-          <button class="btn-ghost" type="reset" onclick="document.getElementById('bday').value='';document.getElementById('bdayError').hidden=true;document.getElementById('resultsCard').hidden=true;">Clear</button>
+  <div class="window">
+    <!-- Entire bar is draggable by default -->
+    <div class="titlebar" data-tauri-drag-region>
+      <!-- Buttons are explicitly no-drag so they stay clickable -->
+      <div class="l" data-tauri-drag-region="no-drag">
+        <div class="btn" id="nav-back"    data-tauri-drag-region="no-drag" title="Back">
+          <svg viewBox="0 0 24 24"><path d="M15.5 4.5a1 1 0 0 1 0 1.4L10.4 11l5.1 5.1a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg>
+        </div>
+        <div class="btn" id="nav-forward" data-tauri-drag-region="no-drag" title="Forward">
+          <svg viewBox="0 0 24 24"><path d="M8.5 19.5a1 1 0 0 1 0-1.4L13.6 13 8.5 7.9a1 1 0 1 1 1.4-1.4l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0z"/></svg>
+        </div>
+        <div class="btn" id="nav-reload"  data-tauri-drag-region="no-drag" title="Reload">
+          <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.64 5.5h-2.04A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
         </div>
       </div>
-    </section>
 
-    <!-- Results start hidden -->
-    <section class="card" id="resultsCard" hidden>
-      <h2 class="title" style="font-size:1.4rem">Your Path Numbers</h2>
-      <div class="features" id="results">
-        <div class="feature" data-role="master" data-link="/learn/master-path-sum.html">
-          <h3>Master Path Sum</h3>
-          <p class="muted value">33 / 6</p>
-          <p class="desc">Master number present; powerful initiator with cooperative undertone.</p>
+      <div class="title" data-tauri-drag-region="no-drag">Path&nbsp;Key</div>
+
+      <div class="r" data-tauri-drag-region="no-drag">
+        <div class="btn" id="win-min" data-tauri-drag-region="no-drag" title="Minimize">
+          <svg viewBox="0 0 24 24"><path d="M5 12h14v1H5z"/></svg>
         </div>
-        <div class="feature" data-role="sub" data-link="/learn/sub-lesson.html">
-          <h3>Sub Lesson</h3>
-          <p class="muted value">12 / 6</p>
-          <p class="desc">Introspective analysis; refine through study and truth‑seeking.</p>
+        <div class="btn" id="win-max" data-tauri-drag-region="no-drag" title="Maximize/Restore">
+          <svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/></svg>
         </div>
-        <div class="feature" data-role="daily" data-link="/learn/daily-number.html">
-          <h3>Daily Number</h3>
-          <p class="muted value">5</p>
-          <p class="desc">Flexibility day; expect change and small experiments.</p>
+        <div class="btn close" id="win-close" data-tauri-drag-region="no-drag" title="Close">
+          <svg viewBox="0 0 24 24"><path d="M6.4 5l5.6 5.6L17.6 5l1.4 1.4L13.4 12l5.6 5.6-1.4 1.4L12 13.4 6.4 19l-1.4-1.4L10.6 12 5 6.4z"/></svg>
         </div>
       </div>
-    </section>
+    </div>
+
+    <div class="content">
+      <iframe class="site" id="site"
+        src="https://mypathkey.com"
+        allow="clipboard-read; clipboard-write; fullscreen; geolocation; microphone; camera">
+      </iframe>
+    </div>
   </div>
-</main>
 
-<footer>
-  <div class="footer-inner">
-    <small>© <span id="year"></span> Path Key.</small>
-    <small>Path Key, My Path Key, PathKey, and MyPathKey and registered trademarks of Anthony M. Lenk. All rights reserved.</small>
-    <small>Palette: <code>#042316</code> • <code>#1f3f2b</code> • <code>#cca242</code></small>
-  </div>
-</footer>
+  <div class="ring" aria-hidden="true"></div>
 
-<script>
-  document.getElementById('year').textContent = new Date().getFullYear();
+  <script>
+    // Tauri v2: global is window.__TAURI__.core
+    const invoke = (cmd, payload) => window.__TAURI__?.core?.invoke(cmd, payload);
 
-  // Native date fallback for old browsers
-  (function(){
-    const el=document.getElementById('bday');
-    const test=document.createElement('input'); test.type='date';
-    if(test.type!=='date'){ el.type='text'; el.placeholder='YYYY-MM-DD'; el.pattern='^\\d{4}-\\d{2}-\\d{2}$'; }
-  })();
+    // Page controls target the iframe we own.
+    const site = document.getElementById('site');
+    document.getElementById('nav-back')   .addEventListener('click', () => site.contentWindow?.history.back());
+    document.getElementById('nav-forward').addEventListener('click', () => site.contentWindow?.history.forward());
+    document.getElementById('nav-reload') .addEventListener('click', () => site.contentWindow?.location.reload());
 
-  // Mobile menu toggle
-  (function(){
-    const btn=document.getElementById('menuBtn');
-    const panel=document.getElementById('mobileMenu');
-    btn.addEventListener('click', () => {
-      const open=panel.hasAttribute('hidden');
-      if(open){ panel.removeAttribute('hidden'); panel.classList.add('open'); btn.setAttribute('aria-expanded','true'); }
-      else{ panel.setAttribute('hidden',''); panel.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-    });
-    // click outside to close
-    document.addEventListener('click', (e) => {
-      if(!panel.contains(e.target) && !btn.contains(e.target)) { panel.setAttribute('hidden',''); panel.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }
-    });
-  })();
-
-  // Unlock flow: validate date, then reveal results
-  (function(){
-    const unlockBtn=document.getElementById('unlockBtn');
-    const bday=document.getElementById('bday');
-    const error=document.getElementById('bdayError');
-    const results=document.getElementById('resultsCard');
-
-    unlockBtn.addEventListener('click', () => {
-      if(!bday.value){ error.hidden=false; results.hidden=true; bday.focus(); return; }
-      error.hidden=true; results.hidden=false;
-
-      // Gold aura rule for Master Path Sum (kept from earlier)
-      const master=document.querySelector('#results [data-role="master"]');
-      if(master){
-        const text=(master.querySelector('.value')?.textContent||'').trim();
-        if(/(^|[^\\d])(11|22|33)([^\\d]|$)/.test(text)){ master.classList.add('aura'); }
-        else{ master.classList.remove('aura'); }
-      }
-      results.scrollIntoView({behavior:'smooth',block:'start'});
-    });
-  })();
-
-  // Result tiles: click to open, keyboard accessible
-  (function(){
-    const tiles=document.querySelectorAll('#results .feature');
-    tiles.forEach(tile=>{
-      const link=tile.getAttribute('data-link')||'#';
-      tile.addEventListener('click',()=>{ if(link!=='#') window.location.href=link; });
-      tile.addEventListener('keydown',(e)=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); if(link!=='#') window.location.href=link; }});
-      tile.setAttribute('tabindex','0');
-    });
-  })();
-</script>
-<script src="./js/header-loader.js"
-        data-header="./partials/header.html"
-        data-css="./css/header.css"
-        data-scope="desktop"></script>
+    // Window controls use a Tauri command.
+    document.getElementById('win-min')  .addEventListener('click', () => invoke('window_action', { action: 'min' }));
+    document.getElementById('win-max')  .addEventListener('click', () => invoke('window_action', { action: 'max' }));
+    document.getElementById('win-close').addEventListener('click', () => invoke('window_action', { action: 'close' }));
+  </script>
 </body>
 </html>

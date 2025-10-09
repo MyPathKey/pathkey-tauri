@@ -1,167 +1,124 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Manager};
-use tauri::Url;
-use tauri::WebviewWindow;
-use tauri::*;
+use tauri::{Manager, Url};
 
 #[tauri::command]
 fn window_action(webview: tauri::Webview, action: String) {
-  let win = webview.window();
+  let window = webview.window();
   match action.as_str() {
-    "min" => { let _ = win.minimize(); }
+    "min" => { let _ = window.minimize(); }
     "max" => {
-      if win.is_maximized().unwrap_or(false) { let _ = win.unmaximize(); }
-      else { let _ = win.maximize(); }
+      if window.is_maximized().unwrap_or(false) { let _ = window.unmaximize(); }
+      else { let _ = window.maximize(); }
     }
-    "close" => { let _ = win.close(); }
+    "close" => { let _ = window.close(); }
     _ => {}
   }
 }
 
+#[tauri::command]
+fn nav_action(webview: tauri::Webview, action: String) {
+  // show spinner if overlay present
+  let _ = webview.eval("document.getElementById('__pk_spinner')?.classList.add('__pk_show')");
+  // drive top-level navigation
+  let js = match action.as_str() {
+    "back" => "history.back()",
+    "forward" => "history.forward()",
+    "reload" => "location.reload()",
+    _ => "void 0",
+  };
+  let _ = webview.eval(js);
+}
+
 fn main() {
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![window_action])
+    .invoke_handler(tauri::generate_handler![window_action, nav_action])
     .setup(|app| {
-      let url = Url::parse("about:blank").unwrap(); // or "https://mypathkey.com"
-      app.get_webview_window("main").unwrap().navigate(url)?;
+      // load real site directly
+      let win = app.get_webview_window("main").expect("main window");
+      win.navigate(Url::parse("https://mypathkey.com").unwrap())?;
       Ok(())
     })
     .on_page_load(|webview, _| {
       let js = r#"
-        (function () {
-          if (window.__emeraldChrome) return; window.__emeraldChrome = true;
+      (function(){
+        if(document.getElementById('__pk_titlebar')) return;
 
-          // ===== Styles (emerald glass + GOLD text/icons) =====
-          const css = `
-            :root {
-              --bg-deep: #081a12;
-              --glass: rgba(12,40,28,.92);
-              --edge: #14924e;          /* border stroke */
-              --glow: rgba(20,146,78,.45);
-              --gold: #f2c66e;
-            }
+        const css = `
+          :root{--gold:#f2c66e;--edge:#14924e;--glow:rgba(20,146,78,.45);}
+          html,body{margin:0;height:100%;overflow:hidden;background:#081a12;color:var(--gold);}
+          #__pk_titlebar{
+            position:fixed;top:0;left:0;right:0;height:34px;z-index:2147483647;
+            display:grid;grid-template-columns:auto 1fr auto;align-items:center;
+            padding:2px 6px;background:rgba(12,40,28,.92);
+            backdrop-filter:blur(10px) saturate(1.15);
+            -webkit-backdrop-filter:blur(10px) saturate(1.15);
+            border-bottom:1px solid rgba(255,255,255,.12);
+            box-shadow:0 4px 14px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.08);
+            color:var(--gold);-webkit-app-region:drag;border-top-left-radius:14px;border-top-right-radius:14px;
+          }
+          #__pk_l,#__pk_r{display:flex;gap:6px;align-items:center}
+          #__pk_title{justify-self:center;font-weight:700;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+          .__pk_btn{
+            -webkit-app-region:no-drag;width:28px;height:26px;border-radius:8px;
+            display:inline-flex;align-items:center;justify-content:center;
+            background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+            color:var(--gold);cursor:pointer;transition:background .12s,transform .06s;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(0,0,0,.5);
+          }
+          .__pk_btn:hover{background:rgba(255,255,255,.14)}.__pk_btn:active{transform:translateY(1px)}
+          .__pk_btn.__pk_close:hover{background:rgba(255,60,60,.55);color:#fff}
+          .__pk_btn svg{width:14px;height:14px;fill:currentColor;filter:drop-shadow(0 1px 0 rgba(0,0,0,.4))}
+          #__pk_ring{position:fixed;inset:0;pointer-events:none;z-index:2147483599;border-radius:16px;
+            box-shadow:0 0 0 2px var(--edge) inset,0 0 18px 2px var(--glow);
+            outline:1px solid rgba(0,0,0,.35);outline-offset:-1px;}
+          #__pk_spinner{
+            position:fixed;top:34px;left:0;right:0;bottom:0;display:flex;align-items:center;justify-content:center;
+            pointer-events:none;opacity:0;transition:opacity .18s ease;z-index:2147483647;
+          }
+          #__pk_spinner.__pk_show{opacity:1}
+          #__pk_spinner .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);
+            box-shadow:0 0 12px rgba(242,198,110,.6);animation:__pk_b 0.9s infinite alternate}
+          #__pk_spinner .dot:nth-child(2){animation-delay:.15s;margin:0 8px}
+          #__pk_spinner .dot:nth-child(3){animation-delay:.30s}
+          @keyframes __pk_b{from{transform:translateY(0);opacity:.6}to{transform:translateY(-9px);opacity:1}}
+        `;
+        const s=document.createElement('style');s.textContent=css;document.head.appendChild(s);
 
-            html, body {
-              margin: 0; height: 100%; width: 100%;
-              background: var(--bg-deep);
-              color: var(--gold);
-              overflow: hidden;
-            }
+        const bar=document.createElement('div');
+        bar.id='__pk_titlebar';bar.setAttribute('data-tauri-drag-region','');
+        bar.innerHTML=`
+          <div id="__pk_l" data-tauri-drag-region="no-drag">
+            <button class="__pk_btn" id="__pk_back" title="Back"><svg viewBox="0 0 24 24"><path d="M15.5 4.5a1 1 0 0 1 0 1.4L10.4 11l5.1 5.1a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg></button>
+            <button class="__pk_btn" id="__pk_forward" title="Forward"><svg viewBox="0 0 24 24"><path d="M8.5 19.5a1 1 0 0 1 0-1.4L13.6 13 8.5 7.9a1 1 0 1 1 1.4-1.4l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0z"/></svg></button>
+            <button class="__pk_btn" id="__pk_reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.64 5.5h-2.04A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></button>
+          </div>
+          <div id="__pk_title" data-tauri-drag-region="no-drag">Path&nbsp;Key</div>
+          <div id="__pk_r" data-tauri-drag-region="no-drag">
+            <button class="__pk_btn" id="__pk_min" title="Minimize"><svg viewBox="0 0 24 24"><path d="M5 12h14v1H5z"/></svg></button>
+            <button class="__pk_btn" id="__pk_max" title="Maximize/Restore"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/></svg></button>
+            <button class="__pk_btn __pk_close" id="__pk_close" title="Close"><svg viewBox="0 0 24 24"><path d="M6.4 5l5.6 5.6L17.6 5l1.4 1.4L13.4 12l5.6 5.6-1.4 1.4L12 13.4 6.4 19l-1.4-1.4L10.6 12 5 6.4z"/></svg></button>
+          </div>
+        `;
+        document.body.appendChild(bar);
+        const ring=document.createElement('div');ring.id='__pk_ring';document.body.appendChild(ring);
+        const spinner=document.createElement('div');spinner.id='__pk_spinner';
+        spinner.innerHTML='<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>';document.body.appendChild(spinner);
 
-            /* Full, visible border on ALL SIDES with rounded corners */
-            .border-ring {
-              position: fixed; inset: 0;
-              pointer-events: none;
-              border-radius: 18px;
-              box-shadow:
-                0 0 0 2px var(--edge) inset,
-                0 0 22px 3px var(--glow);
-              /* Draw a faint outer ring too so edges aren't only at corners */
-              outline: 2px solid rgba(0,0,0,.35);
-              outline-offset: -2px;
-              z-index: 2147483646;
-            }
+        const updateTitle=()=>{const el=document.getElementById('__pk_title');if(el)el.textContent=document.title||'Path Key';};
+        updateTitle();new MutationObserver(updateTitle).observe(document.querySelector('title')||document.head,{childList:true,subtree:true});
 
-            /* Glass container */
-            .frame {
-              position: fixed; inset: 0;
-              border-radius: 16px;
-              background: var(--glass);
-              -webkit-backdrop-filter: blur(12px) saturate(1.2);
-                      backdrop-filter: blur(12px) saturate(1.2);
-              display: flex; flex-direction: column;
-              overflow: hidden;
-              box-shadow: inset 0 1px 0 rgba(255,255,255,.1);
-            }
+        const hide=()=>spinner.classList.remove('__pk_show');window.addEventListener('load',hide);
 
-            /* TRUE draggable titlebar across the full width */
-            .titlebar {
-              height: 46px;
-              display: grid;
-              grid-template-columns: auto 1fr auto;
-              align-items: center;
-              padding: 6px 10px;
-              -webkit-app-region: drag;         /* drag anywhere here... */
-              border-bottom: 1px solid rgba(255,255,255,.15);
-              box-shadow: 0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
-              color: var(--gold);
-              z-index: 2;
-            }
-            .l, .r { display: flex; gap: 8px; align-items: center; }
-            .l, .r, .btn { -webkit-app-region: no-drag !important; } /* ...but NOT on buttons */
-
-            .title {
-              justify-self: center;
-              font-weight: 700;
-              letter-spacing: .35px;
-              text-shadow: 0 1px 0 rgba(0,0,0,.5);
-            }
-
-            .btn {
-              width: 34px; height: 30px;
-              display: inline-flex; align-items: center; justify-content: center;
-              border-radius: 9px;
-              background: rgba(255,255,255,.08);
-              border: 1px solid rgba(255,255,255,.12);
-              color: var(--gold);
-              cursor: pointer;
-              transition: background .12s, transform .08s;
-              box-shadow: inset 0 1px 0 rgba(255,255,255,.18), inset 0 -1px 0 rgba(0,0,0,.45);
-            }
-            .btn:hover { background: rgba(255,255,255,.16); }
-            .btn:active { transform: translateY(1px); }
-            .close:hover { background: rgba(255,60,60,.55); color: #fff; }
-            .btn svg { width: 16px; height: 16px; fill: currentColor; filter: drop-shadow(0 1px 0 rgba(0,0,0,.4)); }
-
-            /* Content area (holds the remote site) */
-            .content { flex: 1; position: relative; }
-            .content iframe {
-              position: absolute; inset: 0; width: 100%; height: 100%;
-              border: 0; background: transparent;
-            }
-          `;
-
-          const style = document.createElement('style');
-          style.textContent = css;
-          document.head.appendChild(style);
-
-          // ===== DOM
-          document.body.innerHTML = `
-            <div class="frame" id="frame">
-              <div class="titlebar">
-                <div class="l">
-                  <div class="btn" id="nav-back" title="Back"><svg viewBox="0 0 24 24"><path d="M15.5 4.5a1 1 0 0 1 0 1.4L10.4 11l5.1 5.1a1 1 0 0 1-1.4 1.4l-6-6a1 1 0 0 1 0-1.4l6-6a1 1 0 0 1 1.4 0z"/></svg></div>
-                  <div class="btn" id="nav-forward" title="Forward"><svg viewBox="0 0 24 24"><path d="M8.5 19.5a1 1 0 0 1 0-1.4L13.6 13 8.5 7.9a1 1 0 1 1 1.4-1.4l6 6a1 1 0 0 1 0 1.4l-6 6a1 1 0 0 1-1.4 0z"/></svg></div>
-                  <div class="btn" id="nav-reload" title="Reload"><svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.95 7.95 0 0 0 12 4a8 8 0 1 0 7.64 5.5h-2.04A6 6 0 1 1 12 6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg></div>
-                </div>
-                <div class="title">Path Key</div>
-                <div class="r">
-                  <div class="btn" id="win-min" title="Minimize"><svg viewBox="0 0 24 24"><path d="M5 12h14v1H5z"/></svg></div>
-                  <div class="btn" id="win-max" title="Maximize/Restore"><svg viewBox="0 0 24 24"><path d="M5 5h14v14H5z"/></svg></div>
-                  <div class="btn close" id="win-close" title="Close"><svg viewBox="0 0 24 24"><path d="M6.4 5l5.6 5.6L17.6 5l1.4 1.4L13.4 12l5.6 5.6-1.4 1.4L12 13.4 6.4 19l-1.4-1.4L10.6 12 5 6.4z"/></svg></div>
-                </div>
-              </div>
-              <div class="content">
-                <iframe id="site" src="https://mypathkey.com" allow="clipboard-read; clipboard-write; fullscreen; geolocation; microphone; camera"></iframe>
-              </div>
-            </div>
-            <div class="border-ring" aria-hidden="true"></div>
-          `;
-
-          // ===== Wiring (explicit; not affected by drag region)
-          const site = document.getElementById('site');
-
-          document.getElementById('nav-back').onclick    = () => site.contentWindow?.history.back();
-          document.getElementById('nav-forward').onclick = () => site.contentWindow?.history.forward();
-          document.getElementById('nav-reload').onclick  = () => site.contentWindow?.location.reload();
-
-          document.getElementById('win-min').onclick   = () => window.__TAURI__.invoke('window_action', { action: 'min' });
-          document.getElementById('win-max').onclick   = () => window.__TAURI__.invoke('window_action', { action: 'max' });
-          document.getElementById('win-close').onclick = () => window.__TAURI__.invoke('window_action', { action: 'close' });
-        })();
+        const invoke=(c,p)=>(window.__TAURI__?.core?.invoke||window.__TAURI__?.invoke)?.(c,p);
+        document.getElementById('__pk_back').onclick=()=>invoke('nav_action',{action:'back'});
+        document.getElementById('__pk_forward').onclick=()=>invoke('nav_action',{action:'forward'});
+        document.getElementById('__pk_reload').onclick=()=>invoke('nav_action',{action:'reload'});
+        document.getElementById('__pk_min').onclick=()=>invoke('window_action',{action:'min'});
+        document.getElementById('__pk_max').onclick=()=>invoke('window_action',{action:'max'});
+        document.getElementById('__pk_close').onclick=()=>invoke('window_action',{action:'close'});
+      })();
       "#;
-
       let _ = webview.eval(js);
     })
     .run(tauri::generate_context!())
