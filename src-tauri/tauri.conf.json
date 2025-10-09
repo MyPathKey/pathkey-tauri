@@ -25,9 +25,9 @@
       {
         "label": "splash",
         "title": "Loading...",
-        "url": "splash/splash.html",
+        "url": "dist/splash.html",
         "width": 640,
-        "height": 400,
+        "height": 480,
         "resizable": false,
         "decorations": false,
         "transparent": true,
