@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: filesystem: blob:; img-src 'self' data: blob:;" />
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Loading…</title>
+<style>
+  html, body { height:100%; margin:0; background:#000; }
+  canvas { display:block; width:100vw; height:100vh; background:#000; }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<script>
+/* ================= Tauri signal ================= */
+async function emitSplashFinished(){
+  try{ if(window.__TAURI__?.event?.emit) await window.__TAURI__.event.emit("splash-finished"); }catch(_){}
+}
+
+/* ================= Canvas ================= */
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d', { alpha:false });
+let w,h,dpr,cx,cy,MIN;
+function resize(){
+  dpr = Math.max(1, Math.min(2, window.devicePixelRatio||1));
+  w = Math.floor(innerWidth*dpr); h = Math.floor(innerHeight*dpr);
+  cx = w/2; cy = h/2; MIN = Math.min(w,h);
+  canvas.width = w; canvas.height = h;
+}
+addEventListener('resize', resize, {passive:true}); resize();
+
+/* ================= Timing (no rainfall) ================= */
+const T_SWIRL = 4800;   // sphere with centered logo
+const T_BURST = 1000;   // explosion outward
+const T_FADE  = 1600;   // fade to black + logo + text
+const T_TOTAL = T_SWIRL + T_BURST + T_FADE;
+const T0 = performance.now();
+
+/* ================= Assets (square logo + text) ================= */
+const logoImg = new Image();
+const logoTextImg = new Image();
+let logoReady = false, logoTextReady = false, logoSquareBitmap = null;
+
+async function makeSquareBitmap(img){
+  const side = Math.max(img.naturalWidth, img.naturalHeight);
+  const c = document.createElement('canvas');
+  c.width = side; c.height = side;
+  const g = c.getContext('2d');
+  const x = (side - img.naturalWidth)  / 2;
+  const y = (side - img.naturalHeight) / 2;
+  g.drawImage(img, x, y, img.naturalWidth, img.naturalHeight);
+  return await createImageBitmap(c);
+}
+logoImg.src = "../public/logo_key.png";
+logoTextImg.src = "../public/logo_text.png";
+logoImg.onload = async () => { logoSquareBitmap = await makeSquareBitmap(logoImg); logoReady = true; };
+logoTextImg.onload = () => { logoTextReady = true; };
+
+function drawLogoCentered(scale = 0.22, glow = true){
+  if (!logoReady || !logoSquareBitmap) return;
+  const s = Math.min(w, h) * scale;
+  const lx = (w - s) / 2, ly = (h - s) / 2;
+
+  if (glow){
+    ctx.save();
+    ctx.globalAlpha = 0.25;
+    ctx.filter = 'blur(14px)';
+    ctx.drawImage(logoSquareBitmap, lx, ly, s, s);
+    ctx.restore();
+  }
+  ctx.drawImage(logoSquareBitmap, lx, ly, s, s);
+}
+function drawLogoWithText(scale = 0.22, gapPx = 12){
+  if (!logoReady || !logoSquareBitmap) return;
+  const s = Math.min(w, h) * scale;
+  const lx = (w - s) / 2, ly = (h - s) / 2;
+  ctx.drawImage(logoSquareBitmap, lx, ly, s, s);
+  if (!logoTextReady) return;
+  const tw = s;
+  const th = tw * (logoTextImg.naturalHeight / logoTextImg.naturalWidth);
+  const tx = (w - tw) / 2;
+  const ty = ly + s + (gapPx * dpr);
+  ctx.drawImage(logoTextImg, tx, ty, tw, th);
+}
+
+/* ================= Colors & glyph cache ================= */
+const GREEN_MAIN="#7CFF6B";
+const DIGITS = '123456789'.split('');
+let SIZE_BUCKETS=[], GLYPH={};
+async function buildGlyphs(){
+  SIZE_BUCKETS = [10, 13, 16].map(px=>Math.round(px*dpr));
+  GLYPH = {};
+  for(let si=0; si<SIZE_BUCKETS.length; si++){
+    const fs = SIZE_BUCKETS[si];
+    GLYPH[si]={};
+    for(const d of DIGITS){
+      const c=document.createElement('canvas'), g=c.getContext('2d');
+      g.font=`${fs}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+      const m=g.measureText(d);
+      c.width=Math.ceil(m.width+2); c.height=Math.ceil(fs*1.4);
+      const g2=c.getContext('2d');
+      g2.font=`${fs}px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace`;
+      g2.textAlign='center'; g2.textBaseline='middle'; g2.fillStyle=GREEN_MAIN;
+      g2.fillText(d, c.width/2, c.height/2);
+      GLYPH[si][d]=await createImageBitmap(c);
+    }
+  }
+}
+let glyphsReady=false; buildGlyphs().then(()=>glyphsReady=true);
+
+/* ================= Sphere (even LAT + LON rings) ================= */
+function rand(a,b){ return a + Math.random()*(b-a); }
+let RADIUS, LAT_BANDS, LON_RINGS, particles=[], N, rotX=0, rotY=0;
+
+function initSwirl(){
+  RADIUS = MIN * 0.7;
+  LAT_BANDS = 10;
+  LON_RINGS = 7;
+
+  const area=(w/dpr)*(h/dpr);
+  N = Math.max(1000, Math.min(1700, Math.floor(area/1200)));
+
+  const lats=[], lons=[];
+  for(let i=0;i<LAT_BANDS;i++){ const u=(i+0.5)/LAT_BANDS; lats.push((u-0.5)*Math.PI*0.9); }
+  for(let j=0;j<LON_RINGS;j++){ lons.push(j*(2*Math.PI/LON_RINGS)); }
+
+  particles=[];
+  for(let i=0;i<N;i++){
+    const fam = (i%2===0) ? 'LAT' : 'LON';
+    if (fam==='LAT'){
+      const phi = lats[(i/2|0) % LAT_BANDS];
+      particles.push({ fam:'LAT', phi, lam:rand(0,2*Math.PI),
+        omega:rand(0.8,1.6)*(Math.random()<0.5?-1:1),
+        si:(Math.random()*SIZE_BUCKETS.length)|0,
+        d:DIGITS[(Math.random()*DIGITS.length)|0],
+        x:0,y:0,z:0,vx:0,vy:0,exploded:false });
+    } else {
+      const lam0 = lons[(i/2|0) % LON_RINGS];
+      particles.push({ fam:'LON', lam0, phi:rand(-Math.PI*0.45,Math.PI*0.45),
+        omega:rand(0.7,1.4)*(Math.random()<0.5?-1:1),
+        si:(Math.random()*SIZE_BUCKETS.length)|0,
+        d:DIGITS[(Math.random()*DIGITS.length)|0],
+        x:0,y:0,z:0,vx:0,vy:0,exploded:false });
+    }
+  }
+}
+initSwirl();
+
+function rotateXY(vx,vy,vz, ax, ay){
+  let y = vy*Math.cos(ax) - vz*Math.sin(ax);
+  let z = vy*Math.sin(ax) + vz*Math.cos(ax);
+  let x = vx;
+  const x2 =  x*Math.cos(ay) + z*Math.sin(ay);
+  const z2 = -x*Math.sin(ay) + z*Math.cos(ay);
+  return [x2, y, z2];
+}
+function project3D(X,Y,Z){ return { sx: cx + X, sy: cy + Y*0.95, depth: (Z/RADIUS+1)/2 }; }
+
+function updateSwirl(dt, outBack, outFront){
+  rotX += dt*0.0006; rotY += dt*0.0009;
+  outBack.length = 0; outFront.length = 0;
+
+  for(const p of particles){
+    let X,Y,Z;
+    if(p.fam==='LAT'){
+      p.lam += p.omega * dt*0.001;
+      const cosPhi=Math.cos(p.phi), sinPhi=Math.sin(p.phi);
+      const cosLam=Math.cos(p.lam), sinLam=Math.sin(p.lam);
+      X = RADIUS * cosPhi * cosLam; Y = RADIUS * sinPhi; Z = RADIUS * cosPhi * sinLam;
+    } else {
+      p.phi += p.omega * dt*0.001;
+      p.phi = Math.max(-Math.PI*0.48, Math.min(Math.PI*0.48, p.phi));
+      const cosPhi=Math.cos(p.phi), sinPhi=Math.sin(p.phi);
+      const cosLam=Math.cos(p.lam0), sinLam=Math.sin(p.lam0);
+      X = RADIUS * cosPhi * cosLam; Y = RADIUS * sinPhi; Z = RADIUS * cosPhi * sinLam;
+    }
+    [X,Y,Z] = rotateXY(X,Y,Z, rotX, rotY);
+    const pr = project3D(X,Y,Z);
+
+    const bmp = GLYPH[p.si]?.[p.d]; if (!bmp) continue;
+    const a = 0.22 + 0.62*pr.depth;
+    const drawItem = {bmp, x:Math.round(pr.sx - bmp.width/2), y:Math.round(pr.sy - bmp.height/2), a};
+    (pr.depth < 0.5 ? outBack : outFront).push(drawItem);
+
+    // cache screen coords for burst
+    p.x = pr.sx; p.y = pr.sy; p.z = pr.depth;
+  }
+}
+
+function drawSwirlWithLogo(dt){
+  const back=[], front=[];
+  updateSwirl(dt, back, front);
+
+  ctx.fillStyle='#000'; ctx.fillRect(0,0,w,h);
+
+  for(const it of back){ ctx.globalAlpha=it.a; ctx.drawImage(it.bmp, it.x, it.y); }
+  ctx.globalAlpha=1;
+
+  // centered logo between back and front layers
+  drawLogoCentered(0.22, true);
+
+  for(const it of front){ ctx.globalAlpha=it.a; ctx.drawImage(it.bmp, it.x, it.y); }
+  ctx.globalAlpha=1;
+}
+
+/* ================= Burst ================= */
+let burstPrimed=false;
+function drawBurst(dt){
+  if(!burstPrimed){
+    for(const p of particles){
+      const dx=p.x-cx, dy=p.y-cy, ang=Math.atan2(dy,dx)+rand(-0.18,0.18);
+      const spd=rand(0.45,0.9)*MIN;
+      p.vx=Math.cos(ang)*spd; p.vy=Math.sin(ang)*spd; p.exploded=true;
+    }
+    burstPrimed=true;
+  }
+  ctx.fillStyle='rgba(0,0,0,0.22)'; ctx.fillRect(0,0,w,h);
+
+  for(const p of particles){
+    p.x+=p.vx*dt*0.001; p.y+=p.vy*dt*0.001;
+    const bmp=GLYPH[p.si]?.[p.d]; if(!bmp) continue;
+    const a = 0.18 + 0.5*p.z;
+    ctx.globalAlpha=a;
+    ctx.drawImage(bmp, Math.round(p.x-bmp.width/2), Math.round(p.y-bmp.height/2));
+  }
+  ctx.globalAlpha=1;
+
+  // keep center logo visible during burst
+  drawLogoCentered(0.22, false);
+}
+
+/* ================= Fade + final logo+text ================= */
+function drawFade(progress){
+  // darken to black
+  ctx.fillStyle=`rgba(0,0,0,${Math.min(1, progress*1.2)})`;
+  ctx.fillRect(0,0,w,h);
+  // final mark: logo + text under it
+  drawLogoWithText(0.22, 12);
+}
+
+/* ================= Main loop ================= */
+let last=T0;
+function loop(now){
+  if(!glyphsReady){ window.requestAnimationFrame(loop); return; }
+  const t=now-T0, dt=Math.min(32, now-last); last=now;
+
+  if(t<=T_SWIRL){ drawSwirlWithLogo(dt); }
+  else if(t<=T_SWIRL+T_BURST){ drawBurst(dt); }
+  else {
+    const fadeT=Math.max(0, t-(T_SWIRL+T_BURST));
+    const progress=Math.min(1, fadeT/T_FADE);
+    drawFade(progress);
+    if(progress>=1){ emitSplashFinished(); return; }
+  }
+  window.requestAnimationFrame(loop);
+}
+window.requestAnimationFrame(loop);
+
+/* Safety + resize reinit */
+setTimeout(emitSplashFinished, T_TOTAL + 600);
+addEventListener('resize', ()=>{ initSwirl(); });
+
+/* Utility */
+function rand(a,b){ return a + Math.random()*(b-a); }
+</script>
+</body>
+</html>

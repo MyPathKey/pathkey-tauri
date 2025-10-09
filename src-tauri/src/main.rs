@@ -1,10 +1,13 @@
 // Copyright 2025 Anthony Lenk (owner, Path Key), Nicholas Chiaravalle (author)
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use tauri::{Manager, Url};
+use std::time::Duration;
+use tauri::{Listener, Manager, Url, Webview};
+
+// ---- Commands --------------------------------------------------------------
 
 #[tauri::command]
-fn window_action(webview: tauri::Webview, action: String) {
+fn window_action(webview: Webview, action: String) {
   let window = webview.window();
   match action.as_str() {
     "min" => { let _ = window.minimize(); }
@@ -18,10 +21,8 @@ fn window_action(webview: tauri::Webview, action: String) {
 }
 
 #[tauri::command]
-fn nav_action(webview: tauri::Webview, action: String) {
-  // show spinner if overlay present
+fn nav_action(webview: Webview, action: String) {
   let _ = webview.eval("document.getElementById('__pk_spinner')?.classList.add('__pk_show')");
-  // drive top-level navigation
   let js = match action.as_str() {
     "back" => "history.back()",
     "forward" => "history.forward()",
@@ -31,13 +32,42 @@ fn nav_action(webview: tauri::Webview, action: String) {
   let _ = webview.eval(js);
 }
 
+// ---- App entry -------------------------------------------------------------
+
 fn main() {
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![window_action, nav_action])
     .setup(|app| {
-      // load real site directly
-      let win = app.get_webview_window("main").expect("main window");
-      win.navigate(Url::parse("https://mypathkey.com").unwrap())?;
+      // One handle to call .listen with (&self), another moved into the closure
+      let app_handle = app.handle().clone();
+      let app_handle_for_event = app_handle.clone();
+
+      app_handle.listen("splash-finished", move |_evt| {
+        if let Some(s) = app_handle_for_event.get_webview_window("splash") {
+          let _ = s.close();
+        }
+        if let Some(m) = app_handle_for_event.get_webview_window("main") {
+          let _ = m.show();
+        }
+      });
+
+      // Timer path: use an independent clone as well
+      let app_handle_for_timer = app.handle().clone();
+      tauri::async_runtime::spawn(async move {
+        tokio::time::sleep(Duration::from_millis(10_500)).await;
+        if let Some(s) = app_handle_for_timer.get_webview_window("splash") {
+          let _ = s.close();
+        }
+        if let Some(m) = app_handle_for_timer.get_webview_window("main") {
+          let _ = m.show();
+        }
+      });
+
+      // Initial navigation
+      if let Some(win) = app.get_webview_window("main") {
+        let _ = win.navigate(Url::parse("https://mypathkey.com").unwrap());
+      }
+
       Ok(())
     })
     .on_page_load(|webview, _| {
@@ -104,7 +134,7 @@ fn main() {
         document.body.appendChild(bar);
         const ring=document.createElement('div');ring.id='__pk_ring';document.body.appendChild(ring);
         const spinner=document.createElement('div');spinner.id='__pk_spinner';
-        spinner.innerHTML='<div class=\"dot\"></div><div class=\"dot\"></div><div class=\"dot\"></div>';document.body.appendChild(spinner);
+        spinner.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';document.body.appendChild(spinner);
 
         const updateTitle=()=>{const el=document.getElementById('__pk_title');if(el)el.textContent=document.title||'Path Key';};
         updateTitle();new MutationObserver(updateTitle).observe(document.querySelector('title')||document.head,{childList:true,subtree:true});

@@ -21,6 +21,22 @@
         "center": true,
         "devtools": false,
         "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/605.1.15 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/605.1.15 PathKey/0.0.1"
+      },
+      {
+        "label": "splash",
+        "title": "Loading...",
+        "url": "splash/splash.html",
+        "width": 640,
+        "height": 400,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "shadow": false,
+        "fullscreen": false,
+        "center": true,
+        "visible": true,
+        "dragDropEnabled": false
       }
     ],
     "security": {
