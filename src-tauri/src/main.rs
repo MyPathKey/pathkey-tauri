@@ -46,7 +46,7 @@ fn main() {
 
         const css = `
           :root{--gold:#f2c66e;--edge:#14924e;--glow:rgba(20,146,78,.45);}
-          html,body{margin:0;height:100%;overflow:hidden;background:#081a12;color:var(--gold);}
+          html,body{margin:0;height:100%;overflow:hidden;color:var(--gold);}
           #__pk_titlebar{
             position:fixed;top:0;left:0;right:0;height:34px;z-index:2147483647;
             display:grid;grid-template-columns:auto 1fr auto;align-items:center;
