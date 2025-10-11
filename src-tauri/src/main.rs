@@ -36,10 +36,13 @@ fn nav_action(webview: Webview, action: String) {
 
 fn main() {
   tauri::Builder::default()
+    // Start Plugins
+    .plugin(tauri_plugin_window_state::Builder::default().build())
+    .plugin(tauri_plugin_notification::init())
+    .plugin(tauri_plugin_updater::Builder::new().build())
+    // End Plugins
     .invoke_handler(tauri::generate_handler![window_action, nav_action])
     .setup(|app| {
-      // NOTE: Ensure tauri.conf.json has `main` visible:false, and a frameless `splash`.
-      // We'll only show/navigate `main` after splash is done or the timer fires.
 
       // Event path — when the splash finishes
       let app_handle_for_event = app.handle().clone();

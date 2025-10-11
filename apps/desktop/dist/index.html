@@ -123,6 +123,15 @@
   <div class="ring" aria-hidden="true"></div>
 
   <script>
+    // Push Notifications
+    // ask once
+    await window.__TAURI__?.notification?.requestPermission();
+    // send
+    await window.__TAURI__?.notification?.sendNotification({
+      title: "Path Key",
+      body: "Reload complete."
+    });
+
     // Tauri v2: global is window.__TAURI__.core
     const invoke = (cmd, payload) => window.__TAURI__?.core?.invoke(cmd, payload);
 
