@@ -53,6 +53,9 @@ pids
 debug.log
 TODO.md
 .aider*
+latest.json
+SIGN.sh
+
 
 # Keys
 *.key
