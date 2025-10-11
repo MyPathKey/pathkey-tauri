@@ -9,16 +9,16 @@ license = "Apache-2.0 AND Proprietary"  # Umbrella expression; details in LICENS
 build = "build.rs"
 
 [build-dependencies]
-tauri-build = { version = "2.4.1", features = [] }
+tauri-build = { version = "2.4.0", features = [] }
 
 [dependencies]
-tauri = { version = "2.4.1", features = [] }
+tauri = { version = "2.4.0", features = [] }
 # Optional useful plugins; comment/uncomment as needed:
 # tauri-plugin-dialog = "2"
 # tauri-plugin-shell = "2"
 
 # Plugins
-tauri-plugin-window-state = "2"
+# tauri-plugin-window-state = "2.4.0"
 tauri-plugin-notification = "2"
 tauri-plugin-updater = "2"
 

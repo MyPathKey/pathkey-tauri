@@ -48,7 +48,7 @@
       "active": true,
       "dialog": true,
       "endpoints": [
-        "httlp://github.com/MyPathKey/pathkey-tauri/release/latest/download/latest.json"
+        "https://github.com/MyPathKey/pathkey-tauri/release/latest/download/latest.json"
       ],
       "pubkey":
       "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI2NzEyQ0JCQUFGOUY0NDkKUldSSjlQbXF1eXh4SmhWS1hwQzByWklWZUd5THF5TzVic3BONk42R0ZGQXBiVEl6UUhaOE1FcHYK"
