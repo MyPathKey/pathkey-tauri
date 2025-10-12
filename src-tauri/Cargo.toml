@@ -1,6 +1,7 @@
+# Copyright 2025 Anthony Lenk (owner, Path Key), Nicholas Chiaravalle (author)
 [package]
 name = "pathkey-desktop"
-version = "0.0.5"
+version = "0.1.0"
 description = "PathKey™ Desktop — a Tauri app that runs the PathKey web interface."
 authors = ["PathKey"]
 edition = "2021"
@@ -8,14 +9,20 @@ license = "Apache-2.0 AND Proprietary"  # Umbrella expression; details in LICENS
 build = "build.rs"
 
 [build-dependencies]
-tauri-build = { version = "2.4.1", features = [] }
+tauri-build = { version = "2.4.0", features = [] }
 
 [dependencies]
-tauri = { version = "2.4.1", features = [] }
+tauri = { version = "2.4.0", features = [] }
 # Optional useful plugins; comment/uncomment as needed:
 # tauri-plugin-dialog = "2"
-# tauri-plugin-os = "2"
 # tauri-plugin-shell = "2"
+
+# Plugins
+# tauri-plugin-window-state = "2.4.0"
+tauri-plugin-notification = "2"
+tauri-plugin-updater = "2"
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+
+tokio = { version = "1", features = ["rt", "macros", "time"] }

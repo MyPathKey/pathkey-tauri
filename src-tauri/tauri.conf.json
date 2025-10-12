@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Path Key Desktop",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "identifier": "com.pathkey.desktop",
   "app": {
     "withGlobalTauri": true,
@@ -17,14 +17,41 @@
         "resizable": true,
         "minWidth": 820,
         "minHeight": 560,
-        "visible": true,
+        "visible": false,
         "center": true,
         "devtools": false,
         "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/605.1.15 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/605.1.15 PathKey/0.0.1"
+      },
+      {
+        "label": "splash",
+        "title": "Loading...",
+        "url": "dist/splash.html",
+        "width": 640,
+        "height": 480,
+        "resizable": false,
+        "decorations": false,
+        "transparent": true,
+        "alwaysOnTop": true,
+        "shadow": false,
+        "fullscreen": false,
+        "center": true,
+        "visible": true,
+        "dragDropEnabled": false
       }
     ],
     "security": {
       "csp": "default-src 'self'; img-src 'self' data: https:; media-src 'self' https:; font-src 'self' data: https:; object-src 'none'; style-src 'self' 'unsafe-inline' https:; script-src 'self' 'unsafe-inline' https:; connect-src 'self' https://mypathkey.com https://*.mypathkey.com wss://*.mypathkey.com"
+    }
+  },
+  "plugins": {
+    "updater": {
+      "active": true,
+      "dialog": true,
+      "endpoints": [
+        "https://github.com/MyPathKey/pathkey-tauri/release/latest/download/latest.json"
+      ],
+      "pubkey":
+      "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI2NzEyQ0JCQUFGOUY0NDkKUldSSjlQbXF1eXh4SmhWS1hwQzByWklWZUd5THF5TzVic3BONk42R0ZGQXBiVEl6UUhaOE1FcHYK"
     }
   },
   "bundle": {
