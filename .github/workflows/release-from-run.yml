@@ -1,20 +1,20 @@
-# .github/workflows/release-from-run.yml
 name: "Release from existing artifacts"
 
 on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: "Run ID to pull artifacts from"
+        description: "Run ID to pull artifacts from (e.g. 18446307436)"
         required: true
         type: string
       tag:
-        description: "Tag name for release (e.g. v1.0.0)"
+        description: "Tag name for release (e.g. v0.1.0)"
         required: true
         type: string
 
 permissions:
   contents: write
+  actions: read
 
 jobs:
   release:
@@ -23,12 +23,34 @@ jobs:
       - name: Checkout repo (for scripts)
         uses: actions/checkout@v4
 
-      - name: Download artifacts from prior run
+      - name: Show artifact names for the chosen run (debug)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Artifacts in run ${{ inputs.run_id }}:"
+          gh api -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/actions/runs/${{ inputs.run_id }}/artifacts \
+            --jq '.artifacts[].name' | sed 's/^/- /' || true
+
+      # Try the expected naming first…
+      - name: Download artifacts (pattern: bundles-*)
+        id: dl_primary
+        continue-on-error: true
         uses: actions/download-artifact@v4
         with:
-          repository: ${{ github.repository }}
           run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           pattern: bundles-*
+          path: artifacts
+          merge-multiple: true
+
+      # …if none found, fall back to all artifacts from that run
+      - name: Fallback download (all artifacts)
+        if: ${{ hashFiles('artifacts/**') == '' }}
+        uses: actions/download-artifact@v4
+        with:
+          run-id: ${{ inputs.run_id }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           path: artifacts
           merge-multiple: true
 
@@ -36,28 +58,55 @@ jobs:
         run: |
           if [ ! -d artifacts ] || [ -z "$(ls -A artifacts || true)" ]; then
             echo "::error::No artifacts found in run ${{ inputs.run_id }}"; exit 1; fi
+          echo "Artifacts downloaded to:" && ls -R artifacts || true
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
+      # Collect only the distributables we want to upload (recursively)
+      - name: Collect distributables
+        run: |
+          set -euo pipefail
+          mkdir -p release
+          # copy common installer formats from anywhere under artifacts/
+          while IFS= read -r -d '' f; do cp "$f" release/; done < <(find artifacts -type f \( \
+            -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' -o -name '*.dmg' -o -name '*-setup.exe' -o -name '*.msi' \
+          \) -print0)
+          # optional detached signatures
+          while IFS= read -r -d '' sig; do cp "$sig" release/; done < <(find artifacts -type f -name '*.sig' -print0 || true)
+          echo "Release payload:" && ls -l release
+
+      # Compute VERSION without a leading "v"
+      - name: Compute version from tag
+        id: ver
+        run: |
+          TAG="${{ inputs.tag }}"
+          if [[ "$TAG" =~ ^v(.+)$ ]]; then VERSION="${BASH_REMATCH[1]}"; else VERSION="$TAG"; fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Generate latest.json (no signing)
         env:
           GITHUB_REPOSITORY: ${{ github.repository }}
-          GITHUB_REF_NAME: ${{ inputs.tag }}     # so version = tag without 'v'
-          ARTIFACTS_DIR: artifacts
+          GITHUB_REF_NAME: ${{ steps.ver.outputs.tag }}
+          RELEASE_TAG: ${{ steps.ver.outputs.tag }}
+          ARTIFACTS_DIR: release
           RELEASE_NOTES: ""
+          VERSION_OVERRIDE: ${{ steps.ver.outputs.version }}
         run: node scripts/generate-latest.mjs
 
       - name: Publish to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag }}
+          tag_name: ${{ steps.ver.outputs.tag }}
           files: |
-            artifacts/**/*
+            release/*
             latest.json
           draft: false
           prerelease: false
+          overwrite_files: true
+          fail_on_unmatched_files: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
