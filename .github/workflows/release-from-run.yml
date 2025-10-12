@@ -1,0 +1,63 @@
+# .github/workflows/release-from-run.yml
+name: "Release from existing artifacts"
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run ID to pull artifacts from"
+        required: true
+        type: string
+      tag:
+        description: "Tag name for release (e.g. v1.0.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repo (for scripts)
+        uses: actions/checkout@v4
+
+      - name: Download artifacts from prior run
+        uses: actions/download-artifact@v4
+        with:
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.run_id }}
+          pattern: bundles-*
+          path: artifacts
+          merge-multiple: true
+
+      - name: Ensure artifacts exist
+        run: |
+          if [ ! -d artifacts ] || [ -z "$(ls -A artifacts || true)" ]; then
+            echo "::error::No artifacts found in run ${{ inputs.run_id }}"; exit 1; fi
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate latest.json (no signing)
+        env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF_NAME: ${{ inputs.tag }}     # so version = tag without 'v'
+          ARTIFACTS_DIR: artifacts
+          RELEASE_NOTES: ""
+        run: node scripts/generate-latest.mjs
+
+      - name: Publish to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ inputs.tag }}
+          files: |
+            artifacts/**/*
+            latest.json
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
