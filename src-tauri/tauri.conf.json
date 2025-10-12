@@ -48,21 +48,23 @@
       "active": true,
       "dialog": true,
       "endpoints": [
-        "https://github.com/MyPathKey/pathkey-tauri/release/latest/download/latest.json"
+        "https://github.com/MyPathKey/pathkey-tauri/releases/latest/download/latest.json"
       ],
-      "pubkey":
-      "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI2NzEyQ0JCQUFGOUY0NDkKUldSSjlQbXF1eXh4SmhWS1hwQzByWklWZUd5THF5TzVic3BONk42R0ZGQXBiVEl6UUhaOE1FcHYK"
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDI2NzEyQ0JCQUFGOUY0NDkKUldSSjlQbXF1eXh4SmhWS1hwQzByWklWZUd5THF5TzVic3BONk42R0ZGQXBiVEl6UUhaOE1FcHYK"
     }
   },
   "bundle": {
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/256x256.png"
-    ],
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/256x256.png"],
     "active": true,
-    "targets": ["appimage","deb","rpm"],
-    "linux": {
+    "targets": [
+      "appimage","deb","rpm",
+      "app","dmg",
+      "nsis"
+    ],
+    "linux": {},
+    "macOS": {},
+    "windows": {
+      "wix": null
     }
   },
   "build": {

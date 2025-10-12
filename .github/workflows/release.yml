@@ -62,6 +62,15 @@ jobs:
       - name: Install Tauri CLI (Rust)
         run: cargo install tauri-cli --locked
 
+      - name: Install Windows packaging tools (NSIS)
+              if: matrix.target == 'windows'
+              run: choco install nsis -y
+
+            # (Optional) For MSI output, enable "msi" in targets and install WiX:
+      - name: Install WiX (for MSI)
+              if: matrix.target == 'windows'
+              run: choco install wixtoolset -y
+
       - name: Build release bundles
         run: cargo tauri build --verbose
 
