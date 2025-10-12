@@ -101,6 +101,9 @@ jobs:
     runs-on: ubuntu-22.04
     needs: build
     steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
